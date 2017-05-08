@@ -1,0 +1,26 @@
+<template data-sly-template.template="${@ categories, currentPagePath}">
+    <sly data-sly-list.category="${categories}">
+        <sly data-sly-test="${category.displayed}">
+            <sly data-sly-test="${category.patterns}">
+                <h3 class="sg-pattern-category-title" data-sly-list.breadcrumb="${category.breadcrumb}">
+                    <a class="patternLink" href="${currentPage.path}.pattern.${breadcrumb.id}.html" target="_top">${breadcrumb.name} ${!breadcrumbList.last ? " > " : ""}</a>
+                </h3>
+                <sly data-sly-list.pattern="${category.patterns}">
+                    <div class="sg-pattern" data-sly-test="${pattern.displayed}">
+                        <div class="sg-pattern-head">
+                            <h3 class="sg-pattern-title" data-sly-list.breadcrumb="${pattern.breadcrumb}">
+                                <a href="${currentPage.path}.pattern.${breadcrumb.id}.html" class="patternLink" title="Link to Pattern" target="_top">
+                                    ${breadcrumb.name} ${!breadcrumbList.last ? " > " : ""}
+                                </a>
+                            </h3>
+                        </div>
+                        <div class="sg-pattern-extra"></div>
+                        <div class="sg-pattern-example" data-sly-resource="${ @path=pattern.id, resourceType='/apps/patternlab/components/pattern'}">
+                        </div>
+                    </div>
+                </sly>
+            </sly>
+            <sly data-sly-test="${category.subCategories}" data-sly-use.patternsmenu="templates/patternsmenu.html" data-sly-call="${patternsmenu.template @ categories=category.subCategories, currentPagePath=currentPagePath}"></sly>
+        </sly>
+    </sly>
+</template>

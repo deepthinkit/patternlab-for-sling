@@ -1,0 +1,35 @@
+<template data-sly-template.template="${@ title, categories, currentPagePath}">
+    <html id="patternlab-html">
+        <head id="patternlab-head">
+            <title id="title">${title}</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+            <link rel="stylesheet" href="/etc/designs/patternlab/clientlib/css/prism-typeahead.css" type="text/css">
+            <link rel="stylesheet" href="/etc/designs/patternlab/clientlib/css/styleguide.css" type="text/css">
+            <link rel="shortcut icon" href="/etc/designs/patternlab/clientlib/images/favicon.ico" />
+        </head>
+        <body id="patternlab-body">
+            <sly data-sly-use.header="templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
+            <div id="sg-vp-wrap">
+                <div id="sg-cover"></div>
+                <div id="sg-gen-container" class="vp-animate">
+                    <div id="sg-viewport" class="vp-animate" data-sly-use.patternsTemplate="templates/patternsmenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></div>
+                    <div id="sg-rightpull-container">
+                        <div id="sg-rightpull"></div>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/jquery.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/hogan-3.0.2.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/prism.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/jwerty.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/classList.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/typeahead.bundle.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/EventEmitter.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/script.min.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/patternlab-config.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/patternlab-viewer.js"></script>
+        </body>
+    </html>
+</template>

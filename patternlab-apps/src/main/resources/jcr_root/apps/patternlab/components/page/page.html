@@ -1,0 +1,10 @@
+<sly data-sly-use.model="org.patternlab.sling.core.model.page.PatternLabPageModel"></sly>
+<!DOCTYPE HTML>
+
+<sly data-sly-test.noMenu="${model.noMenu}" data-sly-use.pagenomenu="templates/pagenomenu.html"
+     data-sly-call="${pagenomenu.template @ title=properties.jcr:title, categories=model.categories, currentPagePath=model.currentPagePath}">
+</sly>
+
+<sly data-sly-test="${!noMenu}" data-sly-use.pagemenu="templates/pagemenu.html"
+     data-sly-call="${pagemenu.template @ title=properties.jcr:title, categories=model.categories, currentPagePath=model.currentPagePath}">
+</sly>

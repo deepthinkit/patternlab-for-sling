@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.patternlab.sling</groupId>
+  <artifactId>patternlab-sling-parent</artifactId>
+  <name>Patternlab For Sling - Parent</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <sling.java.version>8</sling.java.version>
+    <sling.host>localhost</sling.host>
+    <sling.port>4502</sling.port>
+    <sling.user>admin</sling.user>
+    <sling.password>admin</sling.password>
+  </properties>
+
+  <modules>
+    <module>patternlab-apps</module>
+    <module>patternlab-core</module>
+  </modules>
+</project>

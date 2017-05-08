@@ -1,0 +1,17 @@
+<template data-sly-template.template="${@ title, categories}">
+    <html>
+    <head data-sly-use.head="org.patternlab.sling.core.model.page.PatternLabClientlibsModel">
+        <title id="title">${title}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link data-sly-repeat.headerCss="${head.headerCss}" rel="stylesheet" href="${headerCss}" type="text/css">
+        <script data-sly-repeat.footerCss="${head.footerCss}" type="text/javascript" src="${footerCss}"></script>
+    </head>
+        <body>
+            <sly data-sly-use.patternsTemplate="templates/patternsnomenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}">
+            </sly>
+            <link data-sly-repeat.footerCss="${head.footerCss}" rel="stylesheet" href="${footerCss}" type="text/css">
+            <script data-sly-repeat.footerJs="${head.footerJs}" type="text/javascript" src="${footerJs}"></script>
+        </body>
+    </html>
+</template>
