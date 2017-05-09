@@ -121,7 +121,7 @@ This is the client side functionality coming from original Pattern Lab, allowing
 
 Based on https://github.com/kciecierski/patternlab-for-sling-demo
 
-To be added
+Link to live demo page to be added.
 
 ## Installation
 
@@ -139,7 +139,7 @@ By default, it is running on port 8080, you can change it with -p parameter:
 
     java -jar org.apache.sling.launchpad-8.jar -p <port>
 
-### 2. Install Pattern Lab
+### 2. Check out and install Pattern Lab For Sling
 
     mvn clean install -PautoInstallBundle
 
