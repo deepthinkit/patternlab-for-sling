@@ -16,7 +16,7 @@ In a lot of ways, this is how we’ve been doing things all along, even if we ha
 [[Brad Frost]( http://bradfrost.com/blog/post/atomic-web-design/)]
 
 ### Patterns
-A visual _design system_ is built out of the core components of typography, layout, shape or form, and colour. [[Laura Kalbag](https://24ways.org/2012/design-systems/)].
+A visual _design system_ is built out of the core components of typography, layout, shape or form, and colour. [[Laura Kalbag](https://24ways.org/2012/design-systems/)]
 
 Atomic design distinguishes five distinct levels in atomic design, each of them represented by different type of Patterns:
 
