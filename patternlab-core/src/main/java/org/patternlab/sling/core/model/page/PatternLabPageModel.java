@@ -25,7 +25,7 @@ import java.util.List;
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternLabPageModel {
 
-    public static final String NO_MENU = "nomenu";
+    public static final String NO_MENU_SELECTOR = "raw";
 
     private static final String PATTERN = "pattern";
 
@@ -128,7 +128,7 @@ public class PatternLabPageModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], NO_MENU)) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], NO_MENU_SELECTOR)) {
                     return true;
                 }
             }
