@@ -8,7 +8,9 @@
 
 _Atomic design_ is a clear methodology for crafting design systems.
 
-Atomic design gives us the ability to traverse from abstract to concrete. Because of this, we can create systems that promote consistency and scalability while simultaneously showing things in their final context. And by assembling rather than deconstructing, we’re crafting a system right out of the gate instead of cherry picking patterns after the fact.
+Atomic design gives us the ability to traverse from abstract to concrete.
+Because of this, we can create systems that promote consistency and scalability while simultaneously showing things in their final context.
+And by assembling rather than deconstructing, we’re crafting a system right out of the gate instead of cherry picking patterns after the fact.
 
 
 Clients and team members are able to better appreciate the concept of design systems by actually seeing the steps laid out in front of them.
@@ -18,7 +20,7 @@ In a lot of ways, this is how we’ve been doing things all along, even if we ha
 ### Patterns
 A visual _design system_ is built out of the core components of typography, layout, shape or form, and colour. [[Laura Kalbag](https://24ways.org/2012/design-systems/)]
 
-Atomic design distinguishes five distinct levels in atomic design, each of them represented by different type of Patterns:
+Atomic design distinguishes five distinct levels, each of them represented by different type of Patterns:
 
 ![Pattern Lab For Sling - patterns](https://raw.githubusercontent.com/kciecierski/patternlab-for-sling/master/img/atomic-web-design.gif)
 
@@ -27,13 +29,14 @@ Because of that, applying atomic design to your application allows to maximise r
 
 ### Pattern Lab
 
-__Pattern Lab__ tool allows to adapt atomic design in development practice.
+__Pattern Lab__ tool allows to adapt atomic design in development practice by giving ability to preview and test the nested Patterns.
 [The original implementation](http://patternlab.io/) is a static site generator (powered by either PHP or Node) that stitches together UI components.
 
-__Pattern Lab For Sling__ can be uploaded to any Sling framework based web application, the most known commercial implementation is [Adobe AEM](http://www.adobe.com/marketing-cloud/enterprise-content-management.html). The tool allows you to utilize great Pattern Lab features for prototyping and testing your Patterns with your Sling applications based on with HTL language.
-Each Pattern is represented as HTML file or HTL template compiled with content data.
+__Pattern Lab For Sling__ main purpose is to support prototyping the site with following atomic design straight on your instance of Apache Sling or its implementation which the most known is [Adobe AEM](http://www.adobe.com/marketing-cloud/enterprise-content-management.html).
+The benefit coming from prototyping straight in your web application is possibility to utilize your Patterns for final implementation by integrating them the proper data from backend.
 
-As Sling based application, it also gives you ability to use global variables to access current scope data, like current page path with _${currentPage.path}_,
+The tool allows also to utilize great Pattern Lab features for prototyping and testing your Patterns with your Sling applications based on with HTL language.
+As Sling based application, it also you ability to use global variables to access current scope data, like current page path with _${currentPage.path}_,
 or to add already implemented logic in your application or include already implemented files and templates. Additionally, as HTL language allows to define unlimited number of templates in one HTML file,
 Pattern Lab For Sling allows to present the same data set with all templates defined in one file.
 
