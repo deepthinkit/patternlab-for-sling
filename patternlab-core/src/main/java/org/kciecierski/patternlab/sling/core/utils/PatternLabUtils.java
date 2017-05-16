@@ -1,4 +1,4 @@
-package org.patternlab.sling.core.utils;
+package org.kciecierski.patternlab.sling.core.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +51,9 @@ public final class PatternLabUtils {
     }
 
     public static String getDataFromFile(String jsonFilePath, ResourceResolver resourceResolver) throws IOException {
+        if (StringUtils.isBlank(jsonFilePath)) {
+            return null;
+        }
         final Resource dataResource = resourceResolver.getResource(jsonFilePath);
         final Resource dataContentResource = dataResource.getChild(JCR_CONTENT);
         final ValueMap dataProperties = dataContentResource.adaptTo(ValueMap.class);

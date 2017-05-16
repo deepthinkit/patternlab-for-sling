@@ -50,7 +50,7 @@
                 <configuration>
                     <instructions>
                         <Sling-Model-Packages>
-                            org.patternlab.sling
+                            org.kciecierski.patternlab.sling
                         </Sling-Model-Packages>
                         <Embed-Dependency>commons-lang,commons-collections4,commons-lang3,jackson-core-asl,jackson-mapper-asl,antlr4-runtime,joda-time,joda-convert</Embed-Dependency>
                     </instructions>

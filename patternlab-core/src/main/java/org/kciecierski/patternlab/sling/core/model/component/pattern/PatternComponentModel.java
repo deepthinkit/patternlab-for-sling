@@ -1,4 +1,4 @@
-package org.patternlab.sling.core.model.component.pattern;
+package org.kciecierski.patternlab.sling.core.model.component.pattern;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -12,7 +12,8 @@ import org.apache.sling.models.annotations.Via;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.patternlab.sling.core.utils.PatternLabUtils;
+import org.kciecierski.patternlab.sling.core.model.page.PatternLabPageModel;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -20,8 +21,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static org.patternlab.sling.core.model.page.PatternLabPageModel.NO_MENU_SELECTOR;
 
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternComponentModel {
@@ -211,7 +210,7 @@ public class PatternComponentModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], NO_MENU_SELECTOR)) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], PatternLabPageModel.NO_MENU_SELECTOR)) {
                     return true;
                 }
             }

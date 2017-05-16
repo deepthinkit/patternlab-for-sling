@@ -1,7 +1,7 @@
 <template data-sly-template.template="${@ title, categories}">
     <html>
     <head data-sly-use.head="org.patternlab.sling.core.model.page.PatternLabClientlibsModel">
-        <title id="title">${title}</title>
+        <title id="title">${properties.jcr:title}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link data-sly-repeat.headerCss="${head.headerCss}" rel="stylesheet" href="${headerCss}" type="text/css">

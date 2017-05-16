@@ -1,4 +1,4 @@
-package org.patternlab.sling.core.model.breadcrumb;
+package org.kciecierski.patternlab.sling.core.model.breadcrumb;
 
 /**
  * Created by Kamil Ciecierski on 5/6/2017.

@@ -2,15 +2,13 @@
         <li data-sly-repeat.category="${categories}">
             <a class="sg-acc-handle" target="_top">${category.name}</a>
             <ol class="sg-acc-panel" data-sly-test="${category.patterns || category.subCategories}">
-                <li data-sly-test="${category.patterns}" data-sly-repeat.pattern="${category.patterns}">
-                    <a class="sg-pop" href="${currentPagePath}.pattern.${breadcrumb.id}.html" target="_top">
-                        <sly data-sly-list.breadcrumb="${pattern.breadcrumb}">${breadcrumb.name} ${!breadcrumbList.last ? " > " : ""}</sly>
-                    </a>
+                <li class="sg-sub-nav" data-sly-test="${category.patterns}" data-sly-repeat.pattern="${category.patterns}">
+                    <a class="sg-pop" href="${currentPagePath}.pattern.${pattern.id}.html" target="_top">${pattern.id}</a>
                 </li>
                 <sly data-sly-test="${category.subCategories}" data-sly-use.menu="templates/menu.html"
                      data-sly-call="${menu.template @ categories=category.subCategories, id=category.id}">
                 </sly>
-                <li><a class="sg-pop" href="${currentPagePath}.pattern.${category.id}.html">View All</a></li>
+                <li class="sg-sub-nav"><a class="sg-pop" href="${currentPagePath}.pattern.${category.id}.html">View All</a></li>
             </ol>
         </li>
 </template>

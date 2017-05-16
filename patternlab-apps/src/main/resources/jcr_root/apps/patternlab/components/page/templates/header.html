@@ -1,4 +1,4 @@
-<template data-sly-template.template="${@ categories, currentPagePath}">
+<template data-sly-template.template="${@ categories, currentPagePath, patternId}">
 
     <header class="sg-header" role="banner">
         <a href="#sg-nav-container" class="sg-nav-toggle">Menu</a>
@@ -7,8 +7,8 @@
                 <li data-sly-repeat.category="${categories}">
                     <a class="sg-acc-handle">${category.name}</a>
                     <ol class="sg-acc-panel" data-sly-test="${category.patterns || category.subCategories}">
-                        <li data-sly-test="${category.patterns}" data-sly-repeat.pattern="${category.patterns}">
-                            <a class="sg-pop" href="${currentPagePath}.pattern.${pattern.id}.html" target="_top">${pattern.name}</a>
+                        <li class="sg-sub-nav" data-sly-test="${category.patterns}" data-sly-repeat.pattern="${category.patterns}">
+                            <a class="sg-pop" href="${currentPagePath}.pattern.${pattern.id}.html" target="_top">${pattern.id}</a>
                         </li>
                         <sly class="sg-acc-panel" data-sly-test="${category.subCategories}" data-sly-use.menu="templates/menu.html"
                              data-sly-call="${menu.template @ categories=category.subCategories, id=category.id, currentPagePath=currentPagePath}">
@@ -47,7 +47,10 @@
                             </button>
                             <ul class="sg-acc-panel sg-right sg-checklist">
                                 <li><a href="#" id="sg-t-patterninfo">Show Pattern Info</a></li>
-                                <li><a href="${currentPagePath}.nomenu.html?wcmmode=disabled" target="_blank" id="sg-raw">Open in new window</a></li>
+                                <li>
+                                    <a data-sly-test.isPattern="${patternId}" href="${currentPagePath}.pattern.${patternId}.raw.html?wcmmode=disabled" target="_blank" id="sg-raw">Open in new window</a>
+                                    <a data-sly-test="${!isPattern}" href="${currentPagePath}.raw.html?wcmmode=disabled" target="_blank" id="sg-raw">Open in new window</a>
+                                </li>
                                 <li><a href="http://patternlab.io/docs/" target="_blank">Pattern Lab Docs</a></li>
                                 <li id="sg-find"><span class="twitter-typeahead" style="position: relative; display: inline-block; direction: ltr;"><input class="typeahead tt-hint" type="text" readonly="" autocomplete="off" spellcheck="false" tabindex="-1" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box border-box rgb(34, 34, 34);"><input class="typeahead tt-input" id="typeahead" type="text" placeholder="Find pattern" autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;"><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: Arial; font-size: 13.3333px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: uppercase;"></pre><span class="tt-dropdown-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none; right: auto;"><div class="tt-dataset-0"></div></span></span></li>
                             </ul>

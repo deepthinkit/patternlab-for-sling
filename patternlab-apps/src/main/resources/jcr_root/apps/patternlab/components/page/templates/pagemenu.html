@@ -1,7 +1,7 @@
-<template data-sly-template.template="${@ title, categories, currentPagePath}">
+<template data-sly-template.template="${@ categories, currentPagePath, patternId}">
     <html id="patternlab-html">
         <head id="patternlab-head">
-            <title id="title">${title}</title>
+            <title id="title">${properties.jcr:title}</title>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -10,11 +10,15 @@
             <link rel="shortcut icon" href="/etc/designs/patternlab/clientlib/images/favicon.ico" />
         </head>
         <body id="patternlab-body">
-            <sly data-sly-use.header="templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
+            <sly data-sly-use.header="templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath, patternId=patternId}"></sly>
             <div id="sg-vp-wrap">
                 <div id="sg-cover"></div>
                 <div id="sg-gen-container" class="vp-animate">
-                    <div id="sg-viewport" class="vp-animate" data-sly-use.patternsTemplate="templates/patternsmenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></div>
+                    <div id="sg-viewport" class="vp-animate">
+                        <sly data-sly-test="${!patternId}">${properties.jcr:description @ context='html'}</sly>
+                        <sly data-sly-use.patternsTemplate="templates/patternsmenu.html"
+                             data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
+                    </div>
                     <div id="sg-rightpull-container">
                         <div id="sg-rightpull"></div>
                     </div>

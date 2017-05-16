@@ -1,20 +1,20 @@
-package org.patternlab.sling.core.model.page;
+package org.kciecierski.patternlab.sling.core.model.page;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.sling.api.resource.*;
-import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.patternlab.sling.core.model.category.CategoryModel;
-import org.patternlab.sling.core.model.pattern.PatternModel;
-import org.patternlab.sling.core.service.api.category.CategoryFactory;
-import org.patternlab.sling.core.service.impl.category.CategoryFactoryImpl;
-import org.patternlab.sling.core.utils.PatternLabUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Via;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.kciecierski.patternlab.sling.core.service.impl.category.CategoryFactoryImpl;
+import org.kciecierski.patternlab.sling.core.model.category.CategoryModel;
+import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
+import org.kciecierski.patternlab.sling.core.service.api.category.CategoryFactory;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -39,7 +39,7 @@ public class PatternLabPageModel {
 
     private static final String DATA = "data";
 
-    private final CategoryFactory categoryFactory = new CategoryFactoryImpl();
+    private CategoryFactory categoryFactory;
 
     @Inject
     @Via("resource")
@@ -54,6 +54,8 @@ public class PatternLabPageModel {
     private List<CategoryModel> categories;
 
     private boolean noMenu;
+
+    private String patternId;
 
     private String currentPagePath;
 
@@ -71,19 +73,20 @@ public class PatternLabPageModel {
 
     @PostConstruct
     private void constructPatternLabPageModel() {
+        noMenu = getNoMenuFromSelector();
+        patternId = getPatternIdFromSelector();
+
         ResourceResolver adminResourceResolver = null;
         try {
-            noMenu = getNoMenuFromSelector();
             adminResourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-            final String patternId = getPatternIdFromSelector();
+            categoryFactory = new CategoryFactoryImpl(adminResourceResolver);
             final Resource pageContentResource = request.getResource();
             currentPagePath = pageContentResource.getPath();
-            constructCategories(pageContentResource, patternId);
-            createOrUpdatePatternComponents(pageContentResource, patternId, adminResourceResolver);
+            constructCategories(pageContentResource, getPatternId());
+            createOrUpdatePatternComponents(pageContentResource, getPatternId(), adminResourceResolver);
         } catch (IOException | LoginException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (adminResourceResolver != null && adminResourceResolver.isLive()) {
                 adminResourceResolver.close();
             }
@@ -119,7 +122,7 @@ public class PatternLabPageModel {
         patternProperties.put(PatternLabUtils.SLING_RESOURCE_TYPE, PATTERN_COMPONENT_RESOURCE_TYPE);
         patternProperties.put(NAME, pattern.getName());
         patternProperties.put(TEMPLATE, pattern.getTemplate());
-        patternProperties.put(DATA, pattern.getData());
+        patternProperties.put(DATA, pattern.getDataPath());
         patternProperties.put(PATH, pattern.getPath());
         adminResourceResolver.commit();
     }
@@ -148,7 +151,7 @@ public class PatternLabPageModel {
         return null;
     }
 
-    private void constructCategories(Resource pageContentResource, String patternId) {
+    private void constructCategories(Resource pageContentResource, String patternId) throws IOException {
         categories = Lists.newArrayList();
         final ResourceResolver resourceResolver = pageContentResource.getResourceResolver();
         final Resource appsPathResource = resourceResolver.getResource(appsPath);
@@ -163,5 +166,9 @@ public class PatternLabPageModel {
 
     public String getCurrentPagePath() {
         return currentPagePath;
+    }
+
+    public String getPatternId() {
+        return patternId;
     }
 }

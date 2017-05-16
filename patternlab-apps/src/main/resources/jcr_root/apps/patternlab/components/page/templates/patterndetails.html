@@ -1,0 +1,37 @@
+<template data-sly-template.template="${@ pattern}">
+    <div class="sg-modal-content-inner" data-sly-test="{pattern.description || pattern.code || pattern.data}">
+        <div class="sg-pattern-extra-inner">
+            <div class="sg-pattern-extra-info" data-sly-test="${pattern.description}">
+                <div  class="sg-pattern-desc">
+                    <p>${pattern.description}</p>
+                </div><!--end .sg-pattern-desc-->
+            </div><!--end .sg-pattern-extra-info-->
+
+            <div class="sg-pattern-extra-code" data-sly-test="${pattern.code || pattern.data}">
+
+                <div class="sg-tabs">
+                    <ul class="sg-tabs-list">
+                        <li data-panelid="sg-panel-pattern" data-sly-test="${pattern.code}">
+                            <a href="#${pattern.id}-pattern-panel" class="active">HTL</a>
+                        </li>
+                        <li data-panelid="sg-panel-html" data-sly-test="${pattern.data}">
+                            <a href="#${pattern.id}-data-panel" class="active">DATA</a>
+                        </li>
+                    </ul><!--end .sg-tabs-list-->
+
+                    <div class="sg-tabs-content">
+                        <div id="${pattern.id}-pattern-panel" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.code}">
+                            ${pattern.code}
+                        </div>
+                        <div id="${pattern.id}-data-panel" class="sg-tabs-panel" style="display: none" data-sly-test="${pattern.data}">
+                            ${pattern.data}
+                        </div>
+                    </div><!--end .sg-tabs-content-->
+
+                </div><!--end .sg-tabs-->
+
+            </div><!--end .sg-pattern-extra-code-->
+
+        </div><!--end .sg-pattern-extra-inner-->
+    </div>
+</template>

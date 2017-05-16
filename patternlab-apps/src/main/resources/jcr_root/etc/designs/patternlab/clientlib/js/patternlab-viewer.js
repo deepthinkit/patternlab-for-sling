@@ -335,9 +335,6 @@ var urlHandler = {
         history.pushState(data, null, addressReplacement);
       }
       document.getElementById("title").innerHTML = "Pattern Lab - "+pattern;
-      if (document.getElementById("sg-raw") !== null) {
-        document.getElementById("sg-raw").setAttribute("href",urlHandler.getFileName(pattern));
-      }
     }
   },
 
@@ -366,9 +363,6 @@ var urlHandler = {
     var obj = JSON.stringify({ "event": "patternLab.updatePath", "path": iFramePath });
     //document.getElementById("sg-viewport").contentWindow.postMessage( obj, urlHandler.targetOrigin);
     document.getElementById("title").innerHTML = "Pattern Lab - "+patternName;
-    if (document.getElementById("sg-raw") !== null) {
-      document.getElementById("sg-raw").setAttribute("href",urlHandler.getFileName(patternName));
-    }
 
     /*
     if (wsnConnected !== undefined) {
@@ -1324,7 +1318,7 @@ window.addEventListener("message", receiveIframeMessage, false);
     minViewportWidth = parseInt(config.ishMinimum), //Minimum Size for Viewport
     maxViewportWidth = parseInt(config.ishMaximum), //Maxiumum Size for Viewport
     viewportResizeHandleWidth = 14, //Width of the viewport drag-to-resize handle
-    $sgViewport = $('.sg-viewport,#sg-viewport'), //Viewport element
+    $sgViewport = $('#sg-viewport'), //Viewport element
     $sizePx = $('.sg-size-px'), //Px size input element in toolbar
     $sizeEms = $('.sg-size-em'), //Em size input element in toolbar
     $bodySize = (config.ishFontSize !== undefined) ? parseInt(config.ishFontSize) : parseInt($('body').css('font-size')), //Body size of the document,
@@ -1649,6 +1643,22 @@ window.addEventListener("message", receiveIframeMessage, false);
 
   });
 
+function waitForLoadAndAdjustHeight(iframe) {
+
+    function adjustHeight(){
+       iframe.style.height = iframe.contentWindow.document.body.offsetHeight + 'px';
+    };
+
+    var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    if (  iframeDoc.readyState  == 'complete' ) {
+        adjustHeight();
+        return;
+    }
+    window.setTimeout(function() {waitForLoadAndAdjustHeight(iframe);}, 100);
+}
+
+
+
   //Resize the viewport
   //'size' is the target size of the viewport
   //'animate' is a boolean for switching the CSS animation on or off. 'animate' is true by default, but can be set to false for things like nudging and dragging
@@ -1665,17 +1675,14 @@ window.addEventListener("message", receiveIframeMessage, false);
 
     //Conditionally remove CSS animation class from viewport
     if(animate===false) {
-      $('#sg-gen-container,.sg-viewport,#sg-viewport').removeClass("vp-animate"); //If aninate is set to false, remove animate class from viewport
+      $('#sg-gen-container,iframe.sg-viewport,#sg-viewport').removeClass("vp-animate"); //If aninate is set to false, remove animate class from viewport
     } else {
-      $('#sg-gen-container,.sg-viewport,#sg-viewport').addClass("vp-animate");
+      $('#sg-gen-container,iframe.sg-viewport,#sg-viewport').addClass("vp-animate");
     }
 
     $('#sg-gen-container').width(theSize+viewportResizeHandleWidth); //Resize viewport wrapper to desired size + size of drag resize handler
-    $('.sg-viewport').width(theSize-viewportResizeHandleWidth);
     $('#sg-viewport').width(theSize);
-    $('iframe.sg-viewport').each(function(){
-       this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
-    });
+      $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
 
 
     var targetOrigin = (window.location.protocol === "file:") ? "*" : window.location.protocol+"//"+window.location.host;
@@ -1733,10 +1740,7 @@ window.addEventListener("message", receiveIframeMessage, false);
 
   //Update The viewport size
   function updateViewportWidth(size) {
-    $(".sg-viewport").width(size-14);
-    $(".sg-viewport").each(function() {
-          this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
-     });
+    $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
     $("#sg-viewport").width(size);
     $("#sg-gen-container").width(size*1 + 14);
 
@@ -1790,7 +1794,7 @@ window.addEventListener("message", receiveIframeMessage, false);
 
 
   // capture the viewport width that was loaded and modify it so it fits with the pull bar
-  var origViewportWidth = $(".sg-viewport").width();
+  var origViewportWidth = $("#sg-viewport").width();
   $(".sg-gen-container").width(origViewportWidth);
 
   var testWidth = screen.width;
@@ -1801,9 +1805,8 @@ window.addEventListener("message", receiveIframeMessage, false);
     $("#sg-rightpull-container").width(0);
   } else {
     $("#sg-viewport").width(origViewportWidth - 14);
-    $(".sg-viewport").width(origViewportWidth - 28);
   }
-  updateSizeReading($(".sg-viewport").width());
+  updateSizeReading($("#sg-viewport").width());
 
   // get the request vars
   var oGetVars = urlHandler.getRequestVars();
@@ -1840,10 +1843,6 @@ window.addEventListener("message", receiveIframeMessage, false);
     history.replaceState({ "pattern": patternName }, null, null);
   }
 
-  if (document.getElementById("sg-raw") !== null) {
-    document.getElementById("sg-raw").setAttribute("href",urlHandler.getFileName(patternName));
-  }
-
   urlHandler.skipBack = true;
   //document.getElementById("sg-viewport").contentWindow.location.replace(iFramePath);
 
@@ -1875,10 +1874,7 @@ window.addEventListener("message", receiveIframeMessage, false);
       if (window.orientation != origOrientation) {
         $("#sg-gen-container").width($(window).width());
         $("#sg-viewport").width($(window).width());
-        $(".sg-viewport").width($(window).width());
-        $(".sg-viewport").each(function() {
-           this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
-        });
+        $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
         updateSizeReading($(window).width());
         origOrientation = window.orientation;
       }
@@ -1957,11 +1953,6 @@ window.addEventListener("message", receiveIframeMessage, false);
   }
   window.addEventListener("message", receiveIframeMessage, false);
 
-  $('iframe.sg-viewport').each(function() {
-      var adjustHeight = function() {
-           this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
-      }
-      $(this).load(adjustHeight);
-  });
+  $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
 
 })(this);

@@ -5,6 +5,6 @@
             <sly data-sly-test="${model.template}" data-sly-use.template="${model.templatePath}" data-sly-call="${template.template @ data=model.patternData}"></sly>
             <sly data-sly-test="${model.include}" data-sly-include="${model.templatePath}"></sly>
         </sly>
-        <iframe class="sg-viewport aa" data-sly-test="${!noMenu}" src="${model.currentPagePath}.pattern.${model.id}.raw.html"></iframe>
+        <iframe class="sg-viewport" data-sly-test="${!noMenu}" src="${model.currentPagePath}.pattern.${model.id}.raw.html?wcmmode=disabled"></iframe>
     </sly>
 </sly>

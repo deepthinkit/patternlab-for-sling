@@ -1,4 +1,4 @@
-package org.patternlab.sling.core.model.page;
+package org.kciecierski.patternlab.sling.core.model.page;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;

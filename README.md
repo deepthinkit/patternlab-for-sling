@@ -35,7 +35,7 @@ __Pattern Lab__ tool allows to adapt atomic design in development practice by gi
 __Pattern Lab For Sling__ main purpose is to support prototyping the site with following atomic design straight on your instance of Apache Sling or its implementation which the most known is [Adobe AEM](http://www.adobe.com/marketing-cloud/enterprise-content-management.html).
 The benefit coming from prototyping straight in your web application is possibility to utilize your Patterns for final implementation by integrating them the proper data from backend.
 
-The tool allows also to utilize great Pattern Lab features for prototyping and testing your Patterns with your Sling applications based on with HTL language.
+The tool allows also to utilize great Pattern Lab features for prototyping and testing your Patterns with your Sling applications based on with HTL language with OOTB XSS protection.
 As Sling based application, it also you ability to use global variables to access current scope data, like current page path with _${currentPage.path}_,
 or to add already implemented logic in your application or include already implemented files and templates. Additionally, as HTL language allows to define unlimited number of templates in one HTML file,
 Pattern Lab For Sling allows to present the same data set with all templates defined in one file.

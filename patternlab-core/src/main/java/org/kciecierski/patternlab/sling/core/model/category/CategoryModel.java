@@ -1,8 +1,8 @@
-package org.patternlab.sling.core.model.category;
+package org.kciecierski.patternlab.sling.core.model.category;
 
 import com.google.common.collect.Lists;
-import org.patternlab.sling.core.model.pattern.PatternModel;
-import org.patternlab.sling.core.utils.PatternLabUtils;
+import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;

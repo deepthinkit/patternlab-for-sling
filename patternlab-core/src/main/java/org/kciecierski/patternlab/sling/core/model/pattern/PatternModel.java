@@ -1,11 +1,13 @@
-package org.patternlab.sling.core.model.pattern;
+package org.kciecierski.patternlab.sling.core.model.pattern;
 
 import com.google.common.collect.Lists;
-import org.patternlab.sling.core.model.breadcrumb.BreadcrumbItemModel;
-import org.patternlab.sling.core.utils.PatternLabUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.kciecierski.patternlab.sling.core.model.breadcrumb.BreadcrumbItemModel;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PatternModel {
@@ -17,6 +19,10 @@ public class PatternModel {
     private final String path;
 
     private final String template;
+
+    private final String dataPath;
+
+    private final String code;
 
     private final String data;
 
@@ -44,48 +50,61 @@ public class PatternModel {
         return path;
     }
 
-    public String getData() {
-        return data;
+    public String getDataPath() {
+        return dataPath;
     }
 
     public List<BreadcrumbItemModel> getBreadcrumb() {
         return breadcrumb;
     }
 
-    public PatternModel(Resource resource, String appsPath, String patternId) {
+    public PatternModel(Resource resource, String appsPath, String patternId, ResourceResolver adminResourceResolver) throws IOException {
         this.id = PatternLabUtils.constructPatternId(resource, appsPath);
         this.name = StringUtils.lowerCase(PatternLabUtils.getResourceTitleOrName(resource));
         this.template = StringUtils.EMPTY;
         this.path = resource.getPath();
-        this.data = StringUtils.EMPTY;
+        this.dataPath = StringUtils.EMPTY;
         this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(id, name));
+        this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
+        this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
     }
 
-    public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile) {
+    public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, ResourceResolver adminResourceResolver) throws IOException {
         this.id = PatternLabUtils.constructPatternId(resource, appsPath, jsonDataFile);
         this.name = StringUtils.lowerCase(jsonDataFile);
         this.template = StringUtils.EMPTY;
         this.path = resource.getPath();
-        this.data = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
+        this.dataPath = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
         this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(PatternLabUtils.constructPatternId(resource, appsPath), PatternLabUtils.getResourceTitleOrName(resource)));
         this.breadcrumb.add(new BreadcrumbItemModel(id, name));
+        this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
+        this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
     }
 
-    public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, String templateName) {
+    public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {
         this.id = PatternLabUtils.constructPatternId(resource, appsPath, jsonDataFile, templateName);
         this.name = StringUtils.lowerCase(StringUtils.isBlank(jsonDataFile) ? templateName : jsonDataFile);
         this.template = templateName;
         this.path = resource.getPath();
-        this.data = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
+        this.dataPath = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
         this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(PatternLabUtils.constructPatternId(resource, appsPath), PatternLabUtils.getResourceTitleOrName(resource)));
         if (StringUtils.isNotBlank(jsonDataFile)) {
             this.breadcrumb.add(new BreadcrumbItemModel(PatternLabUtils.constructPatternId(resource, appsPath, StringUtils.EMPTY, templateName), templateName));
         }
         this.breadcrumb.add(new BreadcrumbItemModel(id, name));
+        this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
+        this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
     }
 
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getData() {
+        return data;
+    }
 }

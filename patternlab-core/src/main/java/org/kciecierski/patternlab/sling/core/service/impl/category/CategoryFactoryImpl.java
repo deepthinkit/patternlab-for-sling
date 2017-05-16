@@ -1,14 +1,15 @@
-package org.patternlab.sling.core.service.impl.category;
+package org.kciecierski.patternlab.sling.core.service.impl.category;
 
 import com.google.common.collect.Lists;
-import org.patternlab.sling.core.model.category.CategoryModel;
-import org.patternlab.sling.core.model.pattern.PatternModel;
-import org.patternlab.sling.core.service.api.category.CategoryFactory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
+import org.kciecierski.patternlab.sling.core.model.category.CategoryModel;
+import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
+import org.kciecierski.patternlab.sling.core.service.api.category.CategoryFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Created by Kamil Ciecierski on 4/24/2017.
@@ -35,7 +35,7 @@ public class CategoryFactoryImpl implements CategoryFactory {
 
     private static final Pattern DATA_SLY_TEMPLATE_PATTERN = Pattern.compile("data-sly-template.([^ =>]*)([^>]*)>");
 
-    private static final String DATA_EXTENSION = ".js";
+    private static final String DATA_EXTENSION = ".json";
 
     private static final String NT_FOLDER = "nt:folder";
 
@@ -43,12 +43,17 @@ public class CategoryFactoryImpl implements CategoryFactory {
 
     private static final String SLING_ORDERED_FOLDER = "sling:OrderedFolder";
 
+    private final ResourceResolver adminResourceResolver;
 
-    public CategoryModel createCategory(Resource resource, String appsPath, String patternId) {
+    public CategoryFactoryImpl(ResourceResolver adminResourceResolver) {
+        this.adminResourceResolver = adminResourceResolver;
+    }
+
+    public CategoryModel createCategory(Resource resource, String appsPath, String patternId) throws IOException {
         return createCategory(resource, appsPath, patternId, null);
     }
 
-    public CategoryModel createCategory(Resource resource, String appsPath, String patternId, CategoryModel parentCategory) {
+    public CategoryModel createCategory(Resource resource, String appsPath, String patternId, CategoryModel parentCategory) throws IOException {
         if (isFolder(resource)) {
             List<CategoryModel> subCategories = Lists.newArrayList();
             List<PatternModel> patterns = Lists.newArrayList();
@@ -63,11 +68,11 @@ public class CategoryFactoryImpl implements CategoryFactory {
         return null;
     }
 
-    private void updateSubCategoriesAndPatterns(Resource resource, List<CategoryModel> subCategories, List<PatternModel> patterns, CategoryModel parentCategory, String appsPath, String patternId) {
+    private void updateSubCategoriesAndPatterns(Resource resource, List<CategoryModel> subCategories, List<PatternModel> patterns, CategoryModel parentCategory, String appsPath, String patternId) throws IOException {
         if (isHtlFile(resource)) {
             final List<String> templateNames = extractTemplatesFromFile(resource);
             if (CollectionUtils.isEmpty(templateNames)) {
-                patterns.add(new PatternModel(resource, appsPath, patternId));
+                patterns.add(new PatternModel(resource, appsPath, patternId, adminResourceResolver));
             } else {
                 patterns.addAll(getTemplatesPatterns(resource, appsPath, patternId, parentCategory, templateNames));
             }
@@ -79,17 +84,17 @@ public class CategoryFactoryImpl implements CategoryFactory {
         }
     }
 
-    private List<PatternModel> getTemplatesPatterns(Resource resource, String appsPath, String patternId, CategoryModel currentCategory, List<String> templateNames) {
+    private List<PatternModel> getTemplatesPatterns(Resource resource, String appsPath, String patternId, CategoryModel currentCategory, List<String> templateNames) throws IOException {
         List<PatternModel> templatesPatterns = Lists.newArrayList();
         final Resource folderResource = resource.getParent();
         final List<String> jsonDataFiles = getJsonDataFiles(folderResource, StringUtils.substringBefore(resource.getName(), ".html"));
         for (String templateName : templateNames) {
             final List<String> templateDedicatedDataFiles = getTemplateDedicatedFiles(templateName, jsonDataFiles, templateNames);
             if (CollectionUtils.isEmpty(templateDedicatedDataFiles)) {
-                templatesPatterns.add(new PatternModel(resource, appsPath, patternId, StringUtils.EMPTY, templateName));
+                templatesPatterns.add(new PatternModel(resource, appsPath, patternId, StringUtils.EMPTY, templateName, adminResourceResolver));
             } else {
                 for (String jsonDataFileName : templateDedicatedDataFiles) {
-                    templatesPatterns.add(new PatternModel(resource, appsPath, patternId, jsonDataFileName, templateName));
+                    templatesPatterns.add(new PatternModel(resource, appsPath, patternId, jsonDataFileName, templateName, adminResourceResolver));
                 }
             }
         }
