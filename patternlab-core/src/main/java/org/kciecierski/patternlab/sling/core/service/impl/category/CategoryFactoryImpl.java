@@ -16,32 +16,13 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.*;
 
 /**
  * Created by Kamil Ciecierski on 4/24/2017.
  */
 public class CategoryFactoryImpl implements CategoryFactory {
-
-    private static final String JCR_PRIMARY_TYPE = "jcr:primaryType";
-
-    private static final String NT_FILE = "nt:file";
-
-    private static final String HTML = ".html";
-
-    private static final String JCR_CONTENT = "jcr:content";
-
-    private static final String JCR_DATA = "jcr:data";
-
-    private static final Pattern DATA_SLY_TEMPLATE_PATTERN = Pattern.compile("data-sly-template.([^ =>]*)([^>]*)>");
-
-    private static final String DATA_EXTENSION = ".json";
-
-    private static final String NT_FOLDER = "nt:folder";
-
-    private static final String SLING_FOLDER = "sling:Folder";
-
-    private static final String SLING_ORDERED_FOLDER = "sling:OrderedFolder";
 
     private final ResourceResolver adminResourceResolver;
 
@@ -132,7 +113,7 @@ public class CategoryFactoryImpl implements CategoryFactory {
         while (children.hasNext()) {
             final Resource childResource = children.next();
             final String childResourceName = childResource.getName();
-            if (StringUtils.startsWith(childResourceName, name) && StringUtils.endsWith(childResourceName, DATA_EXTENSION)) {
+            if (StringUtils.startsWith(childResourceName, name) && StringUtils.endsWith(childResourceName, DATA_EXT)) {
                 componentJsonDataFiles.add(childResourceName);
             }
         }

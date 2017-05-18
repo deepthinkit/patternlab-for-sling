@@ -1,4 +1,4 @@
-<template data-sly-template.template="${@ pattern}">
+<template data-sly-template.template="${@ pattern, currentPagePath}">
     <div class="sg-modal-content-inner" data-sly-test="{pattern.description || pattern.code || pattern.data}">
         <div class="sg-pattern-extra-inner">
             <div class="sg-pattern-extra-info" data-sly-test="${pattern.description}">
@@ -17,7 +17,7 @@
                         <li data-sly-test="${pattern.data}">
                             <a href="#">DATA</a>
                         </li>
-                        <li data-sly-test="${pattern.html}">
+                        <li>
                             <a href="#">HTML</a>
                         </li>
                     </ul><!--end .sg-tabs-list-->
@@ -35,7 +35,7 @@
                                 </code>
                             </pre>
                         </div>
-                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.html}" data-code="${pattern.html}">
+                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-link="${currentPagePath}/${pattern.id}.raw.html">
                             <pre class="language-markup">
                                 <code class="language-markup">
                                 </code>

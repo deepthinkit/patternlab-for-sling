@@ -22,6 +22,8 @@ public final class PatternLabUtils {
 
     private static final String JCR_CONTENT = "jcr:content";
 
+    private static final String SLASH = "/";
+
     public static String constructPatternId(Resource resource, String appsPath, String jsonDataFileName, String templateName) {
         String patternId = StringUtils.substringAfter(resource.getPath(), appsPath + "/");
         if (StringUtils.endsWith(patternId, ".html")) {
@@ -36,15 +38,11 @@ public final class PatternLabUtils {
             patternId += "/" + dataFileSuffix;
 
         }
-        return StringUtils.replace(patternId, "/", "-");
+        return StringUtils.replace(patternId, SLASH, "-");
     }
 
     public static String constructPatternId(Resource resource, String appsPath) {
         return constructPatternId(resource, appsPath, StringUtils.EMPTY, StringUtils.EMPTY);
-    }
-
-    public static String constructPatternId(Resource resource, String appsPath, String jsonDataFileName) {
-        return constructPatternId(resource, appsPath, jsonDataFileName, StringUtils.EMPTY);
     }
 
     public static String getResourceTitleOrName(final Resource resource) {
@@ -52,12 +50,14 @@ public final class PatternLabUtils {
         return StringUtils.defaultString(title, resource.getName());
     }
 
-    public static String getDataFromFile(String jsonFilePath, ResourceResolver resourceResolver) throws IOException {
-        if (StringUtils.isBlank(jsonFilePath)) {
+    public static String getDataFromFile(String filePath, ResourceResolver resourceResolver) throws IOException {
+        if (StringUtils.isBlank(filePath)) {
             return null;
         }
-        final Resource dataResource = resourceResolver.getResource(jsonFilePath);
-        final Resource dataContentResource = dataResource.getChild(JCR_CONTENT);
+        final Resource dataContentResource = resourceResolver.getResource(filePath + SLASH + JCR_CONTENT);
+        if (dataContentResource == null) {
+            return null;
+        }
         final ValueMap dataProperties = dataContentResource.adaptTo(ValueMap.class);
         final InputStream inputStream = dataProperties.get(JCR_DATA, InputStream.class);
         return IOUtils.toString(inputStream);

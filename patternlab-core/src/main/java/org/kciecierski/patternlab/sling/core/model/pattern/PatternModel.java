@@ -10,6 +10,9 @@ import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 import java.io.IOException;
 import java.util.List;
 
+import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.DESCRIPTION_EXT;
+import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.SELECTOR;
+
 public class PatternModel {
 
     private final String id;
@@ -27,8 +30,6 @@ public class PatternModel {
     private final String data;
 
     private final String description;
-
-    private final String html;
 
     private final boolean displayed;
 
@@ -62,6 +63,19 @@ public class PatternModel {
         return breadcrumb;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+
     public PatternModel(Resource resource, String appsPath, String patternId, ResourceResolver adminResourceResolver) throws IOException {
         this.id = PatternLabUtils.constructPatternId(resource, appsPath);
         this.name = StringUtils.lowerCase(PatternLabUtils.getResourceTitleOrName(resource));
@@ -71,9 +85,9 @@ public class PatternModel {
         this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(id, name));
         this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
-        this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
-        this.html = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
-        this.description = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.data = null;
+        final String descriptionPath = StringUtils.substringBeforeLast(path, SELECTOR) + DESCRIPTION_EXT;
+        this.description = PatternLabUtils.getDataFromFile(descriptionPath, adminResourceResolver);
     }
 
     public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {
@@ -90,24 +104,25 @@ public class PatternModel {
         this.breadcrumb.add(new BreadcrumbItemModel(id, name));
         this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
         this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
-        this.html = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
-        this.description = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.description = constructDescription(jsonDataFile, templateName, adminResourceResolver);
+
     }
 
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public String getDescription() {
+    private String constructDescription(String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {
+        String description = null;
+        if (StringUtils.isNotBlank(jsonDataFile)) {
+            final String descriptionPath = StringUtils.substringBeforeLast(dataPath, SELECTOR) + SELECTOR + templateName + DESCRIPTION_EXT;
+            description = PatternLabUtils.getDataFromFile(descriptionPath, adminResourceResolver);
+        }
+        if (StringUtils.isBlank(description)) {
+            final String descriptionPath = StringUtils.substringBeforeLast(path, SELECTOR) + SELECTOR + templateName + DESCRIPTION_EXT;
+            description = PatternLabUtils.getDataFromFile(descriptionPath, adminResourceResolver);
+        }
+        if (StringUtils.isBlank(description)) {
+            final String descriptionPath = StringUtils.substringBeforeLast(path, SELECTOR) + DESCRIPTION_EXT;
+            description = PatternLabUtils.getDataFromFile(descriptionPath, adminResourceResolver);
+        }
         return description;
     }
 
-    public String getHtml() {
-        return html;
-    }
 }

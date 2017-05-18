@@ -19,7 +19,7 @@
 
                         <div id="sg-pattern-extra-${pattern.id}" class="sg-pattern-extra"
                              data-sly-use.patterndetails="templates/patterndetails.html"
-                             data-sly-call="${patterndetails.template @ pattern=pattern}"></div>
+                             data-sly-call="${patterndetails.template @ pattern=pattern, currentPagePath=currentPagePath}"></div>
                         <div class="sg-pattern-example" data-sly-resource="${ @path=pattern.id, resourceType='/apps/patternlab/components/pattern'}">
                         </div>
                     </div>

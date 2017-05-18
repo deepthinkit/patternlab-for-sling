@@ -12,7 +12,6 @@ import org.apache.sling.models.annotations.Via;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.kciecierski.patternlab.sling.core.model.page.PatternLabPageModel;
 import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import javax.annotation.PostConstruct;
@@ -22,20 +21,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.*;
+
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternComponentModel {
-
-    private static final String TEMPLATE_CALL_PATTERN = "<template data-sly-template.template=\"${@ data}\"><sly data-sly-use.template=\"%s\" data-sly-call=\"${template.%s %s}\"></sly><template>";
-
-    private static final String INCLUDE_PATTERN = "<sly data-sly-include=\"%s\"></sly>";
-
-    private static final String JCR_DATA_PROPERTY = "jcr:data";
-
-    private static final String PROPERTIES = "=data.";
-
-    private static final String PARAMETERS_PREFIX = " @";
-
-    private static final String COMMA = ", ";
 
     @Self
     private SlingHttpServletRequest request;
@@ -162,7 +151,7 @@ public class PatternComponentModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], PatternLabPageModel.RAW_SELECTOR)) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], RAW_SELECTOR)) {
                     return true;
                 }
             }

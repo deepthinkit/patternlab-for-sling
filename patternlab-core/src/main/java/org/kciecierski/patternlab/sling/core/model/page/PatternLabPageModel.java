@@ -24,23 +24,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.*;
+
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternLabPageModel {
-
-    public static final String RAW_SELECTOR = "raw";
-
-    private static final String PATTERN_SELECTOR = "pattern";
-
-    private static final String NAME_PROPERTY = "name";
-
-    private static final String PATH_PROPERTY = "path";
-
-    private static final String TEMPLATE_PROPERTY = "template";
-
-    private static final String DATA_PROPERTY = "data";
-
-    private static final String PATTERN_COMPONENT_RESOURCE_TYPE = "/apps/patternlab/components/pattern";
-
 
     @Inject
     @Via("resource")

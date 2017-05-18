@@ -16,25 +16,43 @@ var PatternInfoDisplayViewer = {
 
       var patternId = toggles[i].getAttribute('data-pattern-id');
 
-
-
       var tabs = $('#sg-pattern-extra-'+patternId + ' .sg-tabs-list > li');
       if (tabs.length > 0) {
          $(tabs[0]).addClass('sg-tab-title-active');
       }
 
       var panels = $('#sg-pattern-extra-'+patternId + ' .sg-tabs-panel');
-      if (panels.length > 0) {
-         var panel = $(panels[0]);
-         panel.show();
-      }
 
       //render markup data with prism
       for (var j = 0; j < panels.length; ++j) {
          var language = panels[j].getAttribute('data-language'),
              code = panels[j].getAttribute('data-code');
-         $(panels[j]).find('code.language-markup')[0].innerHTML = Prism.highlight(code, Prism.languages[language]);
+         if (code != null && code.length > 0) {
+            $(panels[j]).find('code.language-markup')[0].innerHTML = Prism.highlight($.trim(code).replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
+         }
+         else {
+            var link = panels[j].getAttribute('data-link');
+            if (link != null && link.length > 0) {
+                $.ajax({
+                   url:link,
+                   type:'GET',
+                   injectElement: panels[j],
+                   success: function(code){
+                       $(this.injectElement).find('code.language-markup')[0].innerHTML = Prism.highlight($.trim(code).replace('<template>','').replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
+                   }
+                });
+
+            }
+         }
       }
+
+       if (panels.length > 0) {
+               var panel = $(panels[0]);
+               panel.show();
+               var height = panel.find('code.language-markup').height() + 70;
+               panel.closest('.sg-tabs-panel').height(height);
+       }
+
 
       var tabAnchors = tabs.find('a');
 
@@ -48,12 +66,11 @@ var PatternInfoDisplayViewer = {
              var panels = patternExtra.find('.sg-tabs-panel');
              panels.hide();
              $(panels[index]).show();
+             var height = $(panels[index]).find('code.language-markup').height() + 70;
+             $(panels).height(height);
          });
       });
     }
-
-
-
   },
 
   toggle: function(patternId) {
