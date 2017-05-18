@@ -1,18 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.patternlab.sling</groupId>
+  <groupId>org.kciecierski.patternlab.sling</groupId>
   <artifactId>patternlab-sling-parent</artifactId>
-  <name>Patternlab For Sling - Parent</name>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <name>Pattern Lab For Sling - Parent</name>
+  <description>Pattern Lab For Sling - Parent Module</description>
+  <url>https://github.com/kciecierski/patternlab-for-sling</url>
+
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Kamil Ciecierski</name>
+      <email>kamil@ciecierski.me</email>
+      <organization>Ciecierski</organization>
+      <organizationUrl>http://ciecierski.me</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/kciecierski/patternlab-for-sling.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kciecierski/patternlab-for-sling.git</developerConnection>
+    <url>http://github.com/kciecierski/patternlab-for-sling/tree/master</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <sling.java.version>8</sling.java.version>
     <sling.host>localhost</sling.host>
-    <sling.port>4502</sling.port>
+    <sling.port>8080</sling.port>
     <sling.user>admin</sling.user>
     <sling.password>admin</sling.password>
   </properties>

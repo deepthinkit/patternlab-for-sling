@@ -3,7 +3,7 @@
         <div class="sg-pattern-extra-inner">
             <div class="sg-pattern-extra-info" data-sly-test="${pattern.description}">
                 <div  class="sg-pattern-desc">
-                    <p>${pattern.description}</p>
+                    <p>${pattern.description @ context='html'}</p>
                 </div><!--end .sg-pattern-desc-->
             </div><!--end .sg-pattern-extra-info-->
 
@@ -11,20 +11,35 @@
 
                 <div class="sg-tabs">
                     <ul class="sg-tabs-list">
-                        <li data-panelid="sg-panel-pattern" data-sly-test="${pattern.code}">
-                            <a href="#${pattern.id}-pattern-panel" class="active">HTL</a>
+                        <li data-sly-test="${pattern.code}">
+                            <a href="#">HTL</a>
                         </li>
-                        <li data-panelid="sg-panel-html" data-sly-test="${pattern.data}">
-                            <a href="#${pattern.id}-data-panel" class="active">DATA</a>
+                        <li data-sly-test="${pattern.data}">
+                            <a href="#">DATA</a>
+                        </li>
+                        <li data-sly-test="${pattern.html}">
+                            <a href="#">HTML</a>
                         </li>
                     </ul><!--end .sg-tabs-list-->
 
                     <div class="sg-tabs-content">
-                        <div id="${pattern.id}-pattern-panel" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.code}">
-                            ${pattern.code}
+                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.code}" data-code="${pattern.code}">
+                            <pre class="language-markup">
+                                <code class="language-markup">
+                                </code>
+                            </pre>
                         </div>
-                        <div id="${pattern.id}-data-panel" class="sg-tabs-panel" style="display: none" data-sly-test="${pattern.data}">
-                            ${pattern.data}
+                        <div data-language="js" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.data}" data-code="${pattern.data}">
+                            <pre class="language-markup">
+                                <code class="language-markup">
+                                </code>
+                            </pre>
+                        </div>
+                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.html}" data-code="${pattern.html}">
+                            <pre class="language-markup">
+                                <code class="language-markup">
+                                </code>
+                            </pre>
                         </div>
                     </div><!--end .sg-tabs-content-->
 

@@ -31,10 +31,6 @@ public class CategoryModel {
         return id;
     }
 
-    public CategoryModel(Resource resource, String appsPath, String patternId, CategoryModel parentCategory) {
-        this(resource, appsPath, Lists.newArrayList(), Lists.newArrayList(), patternId, parentCategory);
-    }
-
     public CategoryModel(Resource resource, String appsPath, List<CategoryModel> subCategories, List<PatternModel> patterns, String patternId, CategoryModel parentCategory) {
         this.subCategories = subCategories;
         this.id = PatternLabUtils.constructPatternId(resource, appsPath);

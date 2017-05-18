@@ -26,6 +26,10 @@ public class PatternModel {
 
     private final String data;
 
+    private final String description;
+
+    private final String html;
+
     private final boolean displayed;
 
     private final List<BreadcrumbItemModel> breadcrumb;
@@ -68,19 +72,8 @@ public class PatternModel {
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(id, name));
         this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
         this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
-    }
-
-    public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, ResourceResolver adminResourceResolver) throws IOException {
-        this.id = PatternLabUtils.constructPatternId(resource, appsPath, jsonDataFile);
-        this.name = StringUtils.lowerCase(jsonDataFile);
-        this.template = StringUtils.EMPTY;
-        this.path = resource.getPath();
-        this.dataPath = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
-        this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
-        this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(PatternLabUtils.constructPatternId(resource, appsPath), PatternLabUtils.getResourceTitleOrName(resource)));
-        this.breadcrumb.add(new BreadcrumbItemModel(id, name));
-        this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
-        this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.html = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.description = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
     }
 
     public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {
@@ -97,6 +90,8 @@ public class PatternModel {
         this.breadcrumb.add(new BreadcrumbItemModel(id, name));
         this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
         this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.html = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
+        this.description = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
     }
 
 
@@ -106,5 +101,13 @@ public class PatternModel {
 
     public String getData() {
         return data;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getHtml() {
+        return html;
     }
 }

@@ -35,22 +35,13 @@ public class PatternComponentModel {
 
     private static final String PARAMETERS_PREFIX = " @";
 
-    private static final String COMPONENT_RESOURCE_NAME = "component";
-
-    private static final String PATTERN_DATA_PROPERTY = "patternData";
-
-    private static final String PATTERN_HTML_PROPERTY = "patternHtml";
-
-    private static final String HTML = ".html";
-
     private static final String COMMA = ", ";
 
     @Self
     private SlingHttpServletRequest request;
 
-    private boolean noMenu;
-
-    private String id;
+    @OSGiService
+    private ResourceResolverFactory resourceResolverFactory;
 
     @Inject
     @Via("resource")
@@ -68,23 +59,18 @@ public class PatternComponentModel {
     @Via("resource")
     private String data;
 
+    private String id;
+
     private String templatePath;
 
     private Map<String, Object> patternData;
 
     private String currentPagePath;
 
-    @OSGiService
-    private ResourceResolverFactory resourceResolverFactory;
+    private boolean raw;
 
-    @Inject
-    @Via("resource")
-    private Boolean editmode;
-
-    private boolean dataMissing;
-
-    public boolean isNoMenu() {
-        return noMenu;
+    public boolean isRaw() {
+        return raw;
     }
 
     public boolean isTemplate() {
@@ -93,10 +79,6 @@ public class PatternComponentModel {
 
     public boolean isInclude() {
         return StringUtils.endsWith(path, ".html");
-    }
-
-    public boolean isComponent() {
-        return !isTemplate() && !isInclude();
     }
 
     public String getId() {
@@ -111,7 +93,7 @@ public class PatternComponentModel {
     private void constructPatternComponentModel() {
         id = request.getResource().getName();
         currentPagePath = request.getResource().getParent().getPath();
-        noMenu = getNoMenuFromSelector();
+        raw = getNoMenuFromSelector();
         ResourceResolver adminResourceResolver = null;
         try {
             String jsonData = StringUtils.isNotBlank(data) ?
@@ -130,37 +112,13 @@ public class PatternComponentModel {
         }
     }
 
-    private void updatePatternHtml(ResourceResolver adminResourceResolver) throws IOException {
-        if (StringUtils.endsWith(path, HTML)) {
-            String data = PatternLabUtils.getDataFromFile(path, request.getResourceResolver());
-            if (StringUtils.isNotBlank(data)) {
-                final ModifiableValueMap currentResourceProperties = adminResourceResolver.getResource(request.getResource().getPath()).adaptTo(ModifiableValueMap.class);
-                currentResourceProperties.put(PATTERN_HTML_PROPERTY, data);
-            }
-        } else {
-            Resource componentResource = request.getResourceResolver().getResource(path);
-            Resource componentHtlResource = componentResource.getChild(componentResource.getName() + HTML);
-            if (componentHtlResource != null) {
-                final
-                String data = PatternLabUtils.getDataFromFile(componentHtlResource.getPath(), request.getResourceResolver());
-                if (StringUtils.isNotBlank(data)) {
-                    final ModifiableValueMap currentResourceProperties = adminResourceResolver.getResource(request.getResource().getPath()).adaptTo(ModifiableValueMap.class);
-                    currentResourceProperties.put(PATTERN_HTML_PROPERTY, data);
-                }
-            }
-
-        }
-    }
-
     private void constructPattern(String jsonData, ResourceResolver adminResourceResolver) throws IOException {
-        updatePatternData(jsonData, adminResourceResolver);
-        updatePatternHtml(adminResourceResolver);
         final Resource templateResource = getOrCreateTemplateResource(adminResourceResolver);
         templatePath = templateResource.getPath();
-        final Resource templateContentResource = adminResourceResolver.getResource(templateResource,"jcr:content");
+        final Resource templateContentResource = adminResourceResolver.getResource(templateResource, "jcr:content");
         final ModifiableValueMap templateProperties = templateContentResource.adaptTo(ModifiableValueMap.class);
         patternData = StringUtils.isNotBlank(jsonData) ? new ObjectMapper().readValue(jsonData, HashMap.class) : Maps.newHashMap();
-        final String templateCall = StringUtils.isNotBlank(template) ? generateTemplateCall(patternData) : generateInclude();
+        final String templateCall = StringUtils.isNotBlank(template) ? generateTemplateCall(patternData) : generateIncludeCall();
         templateProperties.put(JCR_DATA_PROPERTY, IOUtils.toInputStream(templateCall));
         final ModifiableValueMap patternProperties = adminResourceResolver.getResource(request.getResource().getPath()).adaptTo(ModifiableValueMap.class);
         patternProperties.putAll(patternData);
@@ -180,14 +138,8 @@ public class PatternComponentModel {
         return resource;
     }
 
-    private String generateInclude() {
+    private String generateIncludeCall() {
         return String.format(INCLUDE_PATTERN, path);
-    }
-
-    private void updatePatternData(String jsonData, ResourceResolver adminResourceResolver) {
-        final Resource currentResource = request.getResource();
-        final ModifiableValueMap currentResourceProperties = adminResourceResolver.getResource(currentResource.getPath()).adaptTo(ModifiableValueMap.class);
-        currentResourceProperties.put(PATTERN_DATA_PROPERTY, jsonData);
     }
 
     private String generateTemplateCall(Map<String, Object> jsonData) {
@@ -210,7 +162,7 @@ public class PatternComponentModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], PatternLabPageModel.NO_MENU_SELECTOR)) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], PatternLabPageModel.RAW_SELECTOR)) {
                     return true;
                 }
             }
@@ -220,10 +172,6 @@ public class PatternComponentModel {
 
     public String getName() {
         return name;
-    }
-
-    public Boolean isEditmode() {
-        return editmode;
     }
 
     public String getTemplatePath() {

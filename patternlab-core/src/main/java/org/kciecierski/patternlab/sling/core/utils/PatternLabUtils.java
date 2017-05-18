@@ -17,7 +17,9 @@ public final class PatternLabUtils {
     public static final String SLING_RESOURCE_TYPE = "sling:resourceType";
 
     private static final String JCR_TITLE = "jcr:title";
+
     private static final String JCR_DATA = "jcr:data";
+
     private static final String JCR_CONTENT = "jcr:content";
 
     public static String constructPatternId(Resource resource, String appsPath, String jsonDataFileName, String templateName) {
@@ -28,7 +30,7 @@ public final class PatternLabUtils {
         if (StringUtils.isNotBlank(templateName)) {
             patternId += "/" + templateName;
         }
-        final String fileName =  StringUtils.substringBeforeLast(resource.getName(), ".html");
+        final String fileName = StringUtils.substringBeforeLast(resource.getName(), ".html");
         final String dataFileSuffix = StringUtils.substringBetween(jsonDataFileName, fileName + ".", ".js");
         if (StringUtils.isNotBlank(dataFileSuffix)) {
             patternId += "/" + dataFileSuffix;

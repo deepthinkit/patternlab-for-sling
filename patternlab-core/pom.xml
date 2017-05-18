@@ -17,16 +17,22 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.patternlab.sling</groupId>
+        <groupId>org.kciecierski.patternlab.sling</groupId>
         <artifactId>patternlab-sling-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
     <artifactId>patternlab-sling-core</artifactId>
     <packaging>bundle</packaging>
+
     <name>Patternlab For Sling - Core</name>
+    <description>Pattern Lab For Sling - Core Module</description>
+    <url>https://github.com/kciecierski/patternlab-for-sling</url>
+
     <build>
         <plugins>
             <plugin>
@@ -52,7 +58,9 @@
                         <Sling-Model-Packages>
                             org.kciecierski.patternlab.sling
                         </Sling-Model-Packages>
-                        <Embed-Dependency>commons-lang,commons-collections4,commons-lang3,jackson-core-asl,jackson-mapper-asl,antlr4-runtime,joda-time,joda-convert</Embed-Dependency>
+                        <Embed-Dependency>
+                            commons-lang,commons-collections4,commons-lang3,jackson-core-asl,jackson-mapper-asl,antlr4-runtime,joda-time,joda-convert
+                        </Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>

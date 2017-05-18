@@ -1,4 +1,4 @@
-<template data-sly-template.template="${@ categories, currentPagePath, patternId}">
+<template data-sly-template.template="${@ categories, currentPagePath, patternId, searchPatternResults}">
     <html id="patternlab-html">
         <head id="patternlab-head">
             <title id="title">${properties.jcr:title}</title>
@@ -9,7 +9,7 @@
             <link rel="stylesheet" href="/etc/designs/patternlab/clientlib/css/styleguide.css" type="text/css">
             <link rel="shortcut icon" href="/etc/designs/patternlab/clientlib/images/favicon.ico" />
         </head>
-        <body id="patternlab-body">
+        <body id="patternlab-body" data-search="${searchPatternResults}">
             <sly data-sly-use.header="templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath, patternId=patternId}"></sly>
             <div id="sg-vp-wrap">
                 <div id="sg-cover"></div>
@@ -25,15 +25,15 @@
                 </div>
             </div>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/jquery.min.js"></script>
-            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/hogan-3.0.2.min.js"></script>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/prism.min.js"></script>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/jwerty.min.js"></script>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/classList.min.js"></script>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/typeahead.bundle.min.js"></script>
-            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/EventEmitter.min.js"></script>
             <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/bower_components/script.min.js"></script>
-            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/patternlab-config.js"></script>
-            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/patternlab-viewer.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/cookie.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/search.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/pattern-info-display.js"></script>
+            <script type="text/javascript" src="/etc/designs/patternlab/clientlib/js/viewport.js"></script>
         </body>
     </html>
 </template>

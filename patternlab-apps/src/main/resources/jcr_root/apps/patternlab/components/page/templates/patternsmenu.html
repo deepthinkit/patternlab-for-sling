@@ -3,7 +3,7 @@
         <sly data-sly-test="${category.displayed}">
             <sly data-sly-test="${category.patterns}">
                 <h3 class="sg-pattern-category-title" data-sly-list.breadcrumb="${category.breadcrumb}">
-                    <a class="patternLink" href="${currentPagePath}.pattern.${breadcrumb.id}.html" target="_top">${breadcrumb.name} ${!breadcrumbList.last ? " > " : ""}</a>
+                    <a class="patternLink" href="${currentPagePath}.pattern.${breadcrumb.id}.html" target="_top">${breadcrumb.name}</a>${!breadcrumbList.last ? " ➢ " : ""}
                 </h3>
                 <sly data-sly-list.pattern="${category.patterns}">
                     <div class="sg-pattern" data-sly-test="${pattern.displayed}">
@@ -12,11 +12,9 @@
                                 <a href="${currentPagePath}.pattern.${pattern.id}.html" class="patternLink" title="Link to Pattern" target="_top">${pattern.id}</a>
                             </h3>
                             <div class="sg-pattern-breadcrumb"  data-sly-list.breadcrumb="${pattern.breadcrumb}">
-                                <a href="${currentPagePath}.pattern.${breadcrumb.id}.html" title="Link to Pattern" target="_top">
-                                    ${breadcrumb.name} ${!breadcrumbList.last ? " > " : ""}
-                                </a>
+                                <a href="${currentPagePath}.pattern.${breadcrumb.id}.html" title="Link to Pattern" target="_top">${breadcrumb.name}</a>${!breadcrumbList.last ? " ➢ " : ""}
                             </div>
-                            <a href="#" title="View Pattern Info" id="sg-pattern-extra-toggle-${pattern.id}" class="sg-pattern-extra-toggle active"><span>▼</span></a>
+                            <a id="sg-pattern-extra-toggle-${pattern.id}" href="#" title="View Pattern Info" data-pattern-id="${pattern.id}" class="sg-pattern-extra-toggle"><span>▼</span></a>
                         </div>
 
                         <div id="sg-pattern-extra-${pattern.id}" class="sg-pattern-extra"

@@ -10,10 +10,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Via;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
-import org.kciecierski.patternlab.sling.core.service.impl.category.CategoryFactoryImpl;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.kciecierski.patternlab.sling.core.model.category.CategoryModel;
 import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
 import org.kciecierski.patternlab.sling.core.service.api.category.CategoryFactory;
+import org.kciecierski.patternlab.sling.core.service.impl.category.CategoryFactoryImpl;
 import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import javax.annotation.PostConstruct;
@@ -21,25 +22,25 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternLabPageModel {
 
-    public static final String NO_MENU_SELECTOR = "raw";
+    public static final String RAW_SELECTOR = "raw";
 
-    private static final String PATTERN = "pattern";
+    private static final String PATTERN_SELECTOR = "pattern";
 
-    private static final String NAME = "name";
+    private static final String NAME_PROPERTY = "name";
 
-    private static final String PATH = "path";
+    private static final String PATH_PROPERTY = "path";
+
+    private static final String TEMPLATE_PROPERTY = "template";
+
+    private static final String DATA_PROPERTY = "data";
 
     private static final String PATTERN_COMPONENT_RESOURCE_TYPE = "/apps/patternlab/components/pattern";
 
-    private static final String TEMPLATE = "template";
-
-    private static final String DATA = "data";
-
-    private CategoryFactory categoryFactory;
 
     @Inject
     @Via("resource")
@@ -51,13 +52,17 @@ public class PatternLabPageModel {
     @OSGiService
     private ResourceResolverFactory resourceResolverFactory;
 
-    private List<CategoryModel> categories;
+    private CategoryFactory categoryFactory;
 
-    private boolean noMenu;
+    private List<CategoryModel> categories;
 
     private String patternId;
 
     private String currentPagePath;
+
+    private String searchPatternResults;
+
+    private boolean raw;
 
     public String getAppsPath() {
         return appsPath;
@@ -67,13 +72,13 @@ public class PatternLabPageModel {
         return categories;
     }
 
-    public boolean isNoMenu() {
-        return noMenu;
+    public boolean isRaw() {
+        return raw;
     }
 
     @PostConstruct
     private void constructPatternLabPageModel() {
-        noMenu = getNoMenuFromSelector();
+        raw = getNoMenuFromSelector();
         patternId = getPatternIdFromSelector();
 
         ResourceResolver adminResourceResolver = null;
@@ -84,6 +89,7 @@ public class PatternLabPageModel {
             currentPagePath = pageContentResource.getPath();
             constructCategories(pageContentResource, getPatternId());
             createOrUpdatePatternComponents(pageContentResource, getPatternId(), adminResourceResolver);
+            constructSearchPatternResults();
         } catch (IOException | LoginException e) {
             e.printStackTrace();
         } finally {
@@ -91,6 +97,19 @@ public class PatternLabPageModel {
                 adminResourceResolver.close();
             }
         }
+    }
+
+    private void constructSearchPatternResults() throws IOException {
+        List<String> patternIds = categories.stream().flatMap(category -> constructSearchPatternsResult(category).stream()).collect(Collectors.toList());
+        searchPatternResults = new ObjectMapper().writeValueAsString(patternIds);
+    }
+
+    private List<String> constructSearchPatternsResult(CategoryModel categoryModel) {
+        List<String> categoryResults = Lists.newArrayList();
+        categoryResults.add(categoryModel.getId());
+        categoryResults.addAll(categoryModel.getPatterns().stream().map(PatternModel::getId).collect(Collectors.toList()));
+        categoryModel.getSubCategories().stream().forEach(category -> categoryResults.addAll(constructSearchPatternsResult(category)));
+        return categoryResults;
     }
 
     private void createOrUpdatePatternComponents(Resource pageContentResource, String patternId, ResourceResolver adminResourceResolver) throws IOException {
@@ -120,10 +139,10 @@ public class PatternLabPageModel {
         final Resource patternResource = adminResourceResolver.getResource(pageContentResource, componentName);
         final ModifiableValueMap patternProperties = patternResource.adaptTo(ModifiableValueMap.class);
         patternProperties.put(PatternLabUtils.SLING_RESOURCE_TYPE, PATTERN_COMPONENT_RESOURCE_TYPE);
-        patternProperties.put(NAME, pattern.getName());
-        patternProperties.put(TEMPLATE, pattern.getTemplate());
-        patternProperties.put(DATA, pattern.getDataPath());
-        patternProperties.put(PATH, pattern.getPath());
+        patternProperties.put(NAME_PROPERTY, pattern.getName());
+        patternProperties.put(TEMPLATE_PROPERTY, pattern.getTemplate());
+        patternProperties.put(DATA_PROPERTY, pattern.getDataPath());
+        patternProperties.put(PATH_PROPERTY, pattern.getPath());
         adminResourceResolver.commit();
     }
 
@@ -131,7 +150,7 @@ public class PatternLabPageModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], NO_MENU_SELECTOR)) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], RAW_SELECTOR)) {
                     return true;
                 }
             }
@@ -143,7 +162,7 @@ public class PatternLabPageModel {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], PATTERN) && i + 1 < selectors.length) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], PATTERN_SELECTOR) && i + 1 < selectors.length) {
                     return selectors[i + 1];
                 }
             }
@@ -170,5 +189,9 @@ public class PatternLabPageModel {
 
     public String getPatternId() {
         return patternId;
+    }
+
+    public String getSearchPatternResults() {
+        return searchPatternResults;
     }
 }

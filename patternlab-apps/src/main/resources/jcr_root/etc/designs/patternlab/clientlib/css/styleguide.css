@@ -678,7 +678,7 @@ a {
 
 /**
 * Viewport iframe
-* 1) this is the actual <iframe>
+* 1) container for iframes
 */
 #sg-viewport {
   position: absolute;
@@ -701,6 +701,9 @@ a {
   */
 }
 
+/**
+ * This is actual Iframe
+ **/
 .sg-viewport {
 
   height: 100%;

@@ -1,10 +1,6 @@
-<sly data-sly-use.model="org.patternlab.sling.core.model.component.pattern.PatternComponentModel">
-    <div data-sly-test.dataMissing="${model.dataMissing}">Unable to display missing sample data for ${model.name}</div>
-    <sly data-sly-test="${!dataMissing}">
-        <sly data-sly-test.noMenu="${model.noMenu}">
-            <sly data-sly-test="${model.template}" data-sly-use.template="${model.templatePath}" data-sly-call="${template.template @ data=model.patternData}"></sly>
-            <sly data-sly-test="${model.include}" data-sly-include="${model.templatePath}"></sly>
-        </sly>
-        <iframe class="sg-viewport" data-sly-test="${!noMenu}" src="${model.currentPagePath}.pattern.${model.id}.raw.html?wcmmode=disabled"></iframe>
-    </sly>
+<sly data-sly-use.model="org.kciecierski.patternlab.sling.core.model.component.pattern.PatternComponentModel"></sly>
+<sly data-sly-test.raw="${model.raw}">
+    <sly data-sly-test="${model.template}" data-sly-use.template="${model.templatePath}" data-sly-call="${template.template @ data=model.patternData}"></sly>
+    <sly data-sly-test="${model.include}" data-sly-include="${model.templatePath}"></sly>
 </sly>
+<iframe data-sly-test="${!raw}" class="sg-viewport" frameborder="0" scrolling="no" src="${model.currentPagePath}.pattern.${model.id}.raw.html"></iframe>
