@@ -336,15 +336,22 @@
   });
 
 function waitForLoadAndAdjustHeight(iframe) {
-
+    var iframeElements;
     function adjustHeight(){
-       iframe.style.height = iframe.contentWindow.document.body.offsetHeight + 'px';
+       var height = 0;
+       for (var i = 0; i < iframeElements.length;++i) {
+           height += iframeElements[i].offsetHeight;
+       }
+       iframe.style.height = height + 'px';
     };
 
     var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
     if (  iframeDoc.readyState  == 'complete' ) {
-        adjustHeight();
-        return;
+        iframeElements = $(iframe.contentWindow.document.body).children();
+        if (iframeElements.length > 0) {
+            adjustHeight();
+            return;
+        }
     }
     window.setTimeout(function() {waitForLoadAndAdjustHeight(iframe);}, 100);
 }
@@ -370,11 +377,15 @@ function waitForLoadAndAdjustHeight(iframe) {
       $('#sg-gen-container,iframe.sg-viewport,#sg-viewport').removeClass("vp-animate"); //If aninate is set to false, remove animate class from viewport
     } else {
       $('#sg-gen-container,iframe.sg-viewport,#sg-viewport').addClass("vp-animate");
+      $('#sg-viewport.vp-animate').each(function() {
+         this.addEventListener("animationend", function() { waitForLoadAndAdjustHeight(this) });
+      });
+
     }
+    $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
 
     $('#sg-gen-container').width(theSize+viewportResizeHandleWidth); //Resize viewport wrapper to desired size + size of drag resize handler
     $('#sg-viewport').width(theSize);
-      $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
 
 
     var targetOrigin = (window.location.protocol === "file:") ? "*" : window.location.protocol+"//"+window.location.host;
@@ -604,6 +615,9 @@ function waitForLoadAndAdjustHeight(iframe) {
     }
 
   }
-  $('iframe.sg-viewport').each(function() {waitForLoadAndAdjustHeight(this)});
+  $('iframe.sg-viewport').each(function() {
+    waitForLoadAndAdjustHeight(this);
+
+  });
 
 })(this);
