@@ -49,7 +49,7 @@ public class PatternLabPageModel {
 
     private String searchPatternResults;
 
-    private boolean raw;
+    private boolean rawMode;
 
     public String getAppsPath() {
         return appsPath;
@@ -59,14 +59,26 @@ public class PatternLabPageModel {
         return categories;
     }
 
-    public boolean isRaw() {
-        return raw;
+    public boolean isRawMode() {
+        return rawMode;
+    }
+
+    public String getCurrentPagePath() {
+        return currentPagePath;
+    }
+
+    public String getPatternId() {
+        return patternId;
+    }
+
+    public String getSearchPatternResults() {
+        return searchPatternResults;
     }
 
     @PostConstruct
     private void constructPatternLabPageModel() {
-        raw = getNoMenuFromSelector();
-        patternId = getPatternIdFromSelector();
+        rawMode = getRawSelector();
+        patternId = getPatternIdSelector();
 
         ResourceResolver adminResourceResolver = null;
         try {
@@ -133,7 +145,7 @@ public class PatternLabPageModel {
         adminResourceResolver.commit();
     }
 
-    private boolean getNoMenuFromSelector() {
+    private boolean getRawSelector() {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
@@ -145,7 +157,7 @@ public class PatternLabPageModel {
         return false;
     }
 
-    private String getPatternIdFromSelector() {
+    private String getPatternIdSelector() {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
             for (int i = 0; i < selectors.length; ++i) {
@@ -170,15 +182,4 @@ public class PatternLabPageModel {
         }
     }
 
-    public String getCurrentPagePath() {
-        return currentPagePath;
-    }
-
-    public String getPatternId() {
-        return patternId;
-    }
-
-    public String getSearchPatternResults() {
-        return searchPatternResults;
-    }
 }

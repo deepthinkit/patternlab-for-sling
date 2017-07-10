@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.kciecierski.patternlab.sling.core.model.breadcrumb.BreadcrumbItemModel;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabConstants;
 import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class PatternModel {
         this.name = StringUtils.lowerCase(StringUtils.isBlank(jsonDataFile) ? templateName : jsonDataFile);
         this.template = templateName;
         this.path = resource.getPath();
-        this.dataPath = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + "/" + jsonDataFile : StringUtils.EMPTY;
+        this.dataPath = StringUtils.isNotBlank(jsonDataFile) ? resource.getParent().getPath() + PatternLabConstants.SLASH + jsonDataFile : StringUtils.EMPTY;
         this.displayed = StringUtils.isBlank(patternId) || StringUtils.startsWith(getId(), patternId);
         this.breadcrumb = Lists.newArrayList(new BreadcrumbItemModel(PatternLabUtils.constructPatternId(resource, appsPath), PatternLabUtils.getResourceTitleOrName(resource)));
         if (StringUtils.isNotBlank(jsonDataFile)) {

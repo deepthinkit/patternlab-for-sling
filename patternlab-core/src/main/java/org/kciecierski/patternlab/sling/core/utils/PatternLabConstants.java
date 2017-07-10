@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
  */
 public final class PatternLabConstants {
 
+    public static final String SLASH = "/";
+
+    public static final String TEMPLATES = "templates";
 
     public static final String RAW_SELECTOR = "raw";
 
@@ -44,8 +47,6 @@ public final class PatternLabConstants {
 
     public static final String JCR_DATA = "jcr:data";
 
-    public static final Pattern DATA_SLY_TEMPLATE_PATTERN = Pattern.compile("data-sly-template.([^ =>]*)([^>]*)>");
-
     public static final String DATA_EXT = ".json";
 
     public static final String DESCRIPTION_EXT = ".md";
@@ -54,9 +55,17 @@ public final class PatternLabConstants {
 
     public static final String NT_FOLDER = "nt:folder";
 
+    public static final String NT_RESOURCE = "nt:resource";
+
     public static final String SLING_FOLDER = "sling:Folder";
 
     public static final String SLING_ORDERED_FOLDER = "sling:OrderedFolder";
+
+    public static final String JCR_MIME_TYPE = "jcr:mimeType";
+
+    public static final String TEXT_HTML = "text/html";
+
+    public static final Pattern DATA_SLY_TEMPLATE_PATTERN = Pattern.compile("data-sly-template.([^ =>]*)([^>]*)>");
 
     private PatternLabConstants() {
         //constants class

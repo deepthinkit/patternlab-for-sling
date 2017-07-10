@@ -1,5 +1,5 @@
 <sly data-sly-use.model="org.kciecierski.patternlab.sling.core.model.component.pattern.PatternComponentModel"></sly>
-<sly data-sly-test.raw="${model.raw}">
+<sly data-sly-test.raw="${model.rawMode}">
     <sly data-sly-test="${model.template}" data-sly-use.template="${model.templatePath}" data-sly-call="${template.template @ data=model.patternData}"></sly>
     <sly data-sly-test="${model.include}" data-sly-include="${model.templatePath}"></sly>
 </sly>

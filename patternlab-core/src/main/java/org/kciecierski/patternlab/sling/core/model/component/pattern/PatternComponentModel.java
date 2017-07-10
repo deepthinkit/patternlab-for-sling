@@ -12,6 +12,7 @@ import org.apache.sling.models.annotations.Via;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabConstants;
 import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import javax.annotation.PostConstruct;
@@ -56,10 +57,10 @@ public class PatternComponentModel {
 
     private String currentPagePath;
 
-    private boolean raw;
+    private boolean rawMode;
 
-    public boolean isRaw() {
-        return raw;
+    public boolean isRawMode() {
+        return rawMode;
     }
 
     public boolean isTemplate() {
@@ -78,11 +79,27 @@ public class PatternComponentModel {
         return path;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getTemplatePath() {
+        return templatePath;
+    }
+
+    public Map<String, Object> getPatternData() {
+        return patternData;
+    }
+
+    public String getCurrentPagePath() {
+        return currentPagePath;
+    }
+
     @PostConstruct
     private void constructPatternComponentModel() {
         id = request.getResource().getName();
         currentPagePath = request.getResource().getParent().getPath();
-        raw = getNoMenuFromSelector();
+        rawMode = isRawSelectorPresent();
         ResourceResolver adminResourceResolver = null;
         try {
             String jsonData = StringUtils.isNotBlank(data) ?
@@ -102,29 +119,59 @@ public class PatternComponentModel {
     }
 
     private void constructPattern(String jsonData, ResourceResolver adminResourceResolver) throws IOException {
-        final Resource templateResource = getOrCreateTemplateResource(adminResourceResolver);
+        final Resource templateResource = getOrCreatePatternResource(adminResourceResolver);
         templatePath = templateResource.getPath();
-        final Resource templateContentResource = adminResourceResolver.getResource(templateResource, "jcr:content");
+        final Resource templateContentResource = adminResourceResolver.getResource(templateResource, PatternLabConstants.JCR_CONTENT);
         final ModifiableValueMap templateProperties = templateContentResource.adaptTo(ModifiableValueMap.class);
         patternData = StringUtils.isNotBlank(jsonData) ? new ObjectMapper().readValue(jsonData, HashMap.class) : Maps.newHashMap();
-        final String templateCall = StringUtils.isNotBlank(template) ? generateTemplateCall(patternData) : generateIncludeCall();
-        templateProperties.put(JCR_DATA_PROPERTY, IOUtils.toInputStream(templateCall));
+        final String patternCall = StringUtils.isNotBlank(template) ? generateTemplateCall(patternData) : generateIncludeCall();
+        templateProperties.put(JCR_DATA_PROPERTY, IOUtils.toInputStream(patternCall));
         final ModifiableValueMap patternProperties = adminResourceResolver.getResource(request.getResource().getPath()).adaptTo(ModifiableValueMap.class);
         patternProperties.putAll(patternData);
         adminResourceResolver.commit();
-
     }
 
-    private Resource getOrCreateTemplateResource(ResourceResolver adminResourceResolver) throws PersistenceException {
+    private Resource getOrCreatePatternResource(ResourceResolver adminResourceResolver) throws PersistenceException {
         final String resourceTypePath = request.getResource().getResourceType();
-        Resource resource = adminResourceResolver.getResource(request.getResource().getResourceType() + "/templates/" + id + ".html");
-        if (resource == null) {
-            final Resource templatesFolder = adminResourceResolver.getResource(resourceTypePath + "/templates");
-            resource = adminResourceResolver.create(templatesFolder, id + ".html", ImmutableMap.of("jcr:primaryType", "nt:file"));
-            adminResourceResolver.create(resource, "jcr:content", ImmutableMap.of("jcr:primaryType", "nt:resource", "jcr:mimeType", "text/html", "jcr:data", ""));
-            adminResourceResolver.commit();
+        final String[] patternPathPartials = StringUtils.split(path, PatternLabConstants.SLASH);
+        final String patternProjectSlingPrefix = patternPathPartials[0];
+        final String patternProjectName = patternPathPartials[1];
+        final String patternTypeName = patternPathPartials[2];
+        final String patternPath = buildPatternPath(patternProjectSlingPrefix, patternProjectName, patternTypeName);
+        Resource patternResource = adminResourceResolver.getResource(patternPath);
+        if (patternResource == null) {
+            patternResource = createPatternResource(adminResourceResolver, resourceTypePath, patternProjectSlingPrefix, patternProjectName, patternTypeName);
         }
-        return resource;
+        return patternResource;
+    }
+
+    private Resource createPatternResource(ResourceResolver adminResourceResolver, String resourceTypePath, String slingPrefix, String patternProjectName, String patternTypeName) throws PersistenceException {
+        final Resource templatesFolder = adminResourceResolver.getResource(resourceTypePath + PatternLabConstants.SLASH + PatternLabConstants.TEMPLATES);
+        final Resource slingPrefixFolderResource = getOrCreateFolder(adminResourceResolver, slingPrefix, templatesFolder);
+        final Resource patternProjectFolderResource = getOrCreateFolder(adminResourceResolver, patternProjectName, slingPrefixFolderResource);
+        final Resource patternTypeFolderResource = getOrCreateFolder(adminResourceResolver, patternTypeName, patternProjectFolderResource);
+        final Resource patternResource = adminResourceResolver.create(patternTypeFolderResource, id + PatternLabConstants.HTML,
+                ImmutableMap.of(PatternLabConstants.JCR_PRIMARY_TYPE, PatternLabConstants.NT_FILE));
+        adminResourceResolver.create(patternResource, PatternLabConstants.JCR_CONTENT,
+                ImmutableMap.of(PatternLabConstants.JCR_PRIMARY_TYPE, PatternLabConstants.NT_RESOURCE, JCR_MIME_TYPE, TEXT_HTML, JCR_DATA, StringUtils.EMPTY));
+        adminResourceResolver.commit();
+        return patternResource;
+    }
+
+    private Resource getOrCreateFolder(ResourceResolver adminResourceResolver, String slingPrefix, Resource templatesFolder) throws PersistenceException {
+        Resource slingPrefixFolderResource = templatesFolder.getChild(slingPrefix);
+        if (slingPrefixFolderResource == null) {
+            slingPrefixFolderResource = adminResourceResolver.create(templatesFolder, slingPrefix,
+                    ImmutableMap.of(PatternLabConstants.JCR_PRIMARY_TYPE, PatternLabConstants.SLING_FOLDER));
+        }
+        return slingPrefixFolderResource;
+    }
+
+    private String buildPatternPath(String slingPrefix, String patternProjectName, String patternTypeName) {
+        return request.getResource().getResourceType()
+                + PatternLabConstants.SLASH + PatternLabConstants.TEMPLATES + PatternLabConstants.SLASH
+                + slingPrefix + PatternLabConstants.SLASH + patternProjectName + PatternLabConstants.SLASH
+                + patternTypeName + PatternLabConstants.SLASH + id + PatternLabConstants.HTML;
     }
 
     private String generateIncludeCall() {
@@ -147,31 +194,15 @@ public class PatternComponentModel {
         return String.format(TEMPLATE_CALL_PATTERN, path, template, parameters);
     }
 
-    private boolean getNoMenuFromSelector() {
+    private boolean isRawSelectorPresent() {
         final String[] selectors = request.getRequestPathInfo().getSelectors();
         if (selectors != null) {
-            for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], RAW_SELECTOR)) {
+            for (String selector : selectors)
+                if (StringUtils.equalsIgnoreCase(selector, RAW_SELECTOR)) {
                     return true;
                 }
-            }
         }
         return false;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getTemplatePath() {
-        return templatePath;
-    }
-
-    public Map<String, Object> getPatternData() {
-        return patternData;
-    }
-
-    public String getCurrentPagePath() {
-        return currentPagePath;
-    }
 }
