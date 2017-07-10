@@ -892,7 +892,7 @@ a {
   border: 1px solid #ddd;
   border-radius: 6px;
   border-top-right-radius: 0;
-  max-height: 50em;
+  max-height: 25em;
 }
 
 /**
@@ -1169,6 +1169,7 @@ a {
           flex: 1 1 auto;
   position: relative;
   min-height: 12em;
+  max-height: 23em;
 }
 @media all and (min-width: 42em) {
   .sg-tabs-panel {
