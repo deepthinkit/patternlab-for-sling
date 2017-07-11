@@ -986,7 +986,7 @@ a {
 .sg-pattern-extra-code pre {
   overflow: scroll !important;
   -webkit-overflow-scrolling: touch;
-  padding: 0 0.5rem 0.5rem !important;
+  padding: 1.5rem 0.5rem 0.5rem !important;
   margin: 0 !important;
   line-height: 1 !important;
   -webkit-box-flex: 1;
