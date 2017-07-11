@@ -28,7 +28,7 @@ var PatternInfoDisplayViewer = {
          var language = panels[j].getAttribute('data-language'),
              code = panels[j].getAttribute('data-code');
          if (code != null && code.length > 0) {
-            $(panels[j]).find('code.language-markup')[0].innerHTML = Prism.highlight($.trim(code).replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
+            $(panels[j]).find('code.language-' + language)[0].innerHTML = Prism.highlight($.trim(code).replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
          }
          else {
             var link = panels[j].getAttribute('data-link');
@@ -36,9 +36,10 @@ var PatternInfoDisplayViewer = {
                 $.ajax({
                    url:link,
                    type:'GET',
-                   injectElement: panels[j],
+                   panel: panels[j],
+                   language: language,
                    success: function(code){
-                       $(this.injectElement).find('code.language-markup')[0].innerHTML = Prism.highlight($.trim(code).replace('<template>','').replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
+                       $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight($.trim(code).replace('<template>','').replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
                    }
                 });
 
