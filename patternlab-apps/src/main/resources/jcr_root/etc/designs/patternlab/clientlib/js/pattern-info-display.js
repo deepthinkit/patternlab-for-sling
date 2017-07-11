@@ -49,7 +49,7 @@ var PatternInfoDisplayViewer = {
        if (panels.length > 0) {
                var panel = $(panels[0]);
                panel.show();
-               var height = panel.find('code.language-markup').height() + 70;
+               var height = panel.find('code.language-markup').height() + 63;
                panel.closest('.sg-tabs-panel').height(height);
        }
 
@@ -66,7 +66,7 @@ var PatternInfoDisplayViewer = {
              var panels = patternExtra.find('.sg-tabs-panel');
              panels.hide();
              $(panels[index]).show();
-             var height = $(panels[index]).find('code.language-markup').height() + 70;
+             var height = $(panels[index]).find('code.language-markup').height() + 63;
              $(panels).height(height);
          });
       });
