@@ -46,18 +46,17 @@ var PatternSearch = {
 
   openSearch: function() {
     PatternSearch.active = true;
+    $('#sg-tools-toggle').click();
     $("#sg-find").addClass('show-overflow');
     $('#sg-find .typeahead').val("");
-    $('.sg-tools-toggle').addClass('active');
-    $('.sg-checklist').addClass('active');
     $('#sg-find #typeahead')[0].focus();
   },
 
   closeSearch: function() {
     PatternSearch.active = false;
     document.activeElement.blur();
+    $('#sg-tools-toggle').click();
     $("#sg-find").removeClass('show-overflow');
-    $('.sg-tools-toggle').removeClass('active');
     $('.sg-checklist').removeClass('active');
     $('#sg-find .typeahead').val("");
   },
