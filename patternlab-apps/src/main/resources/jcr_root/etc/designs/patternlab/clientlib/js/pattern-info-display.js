@@ -2,6 +2,8 @@ var PatternInfoDisplayViewer = {
 
   active: [ ],
 
+  hidden: true,
+
   init: function() {
     var that = this,
         toggles = document.querySelectorAll('.sg-pattern-extra-toggle');
@@ -39,7 +41,9 @@ var PatternInfoDisplayViewer = {
                    panel: panels[j],
                    language: language,
                    success: function(code){
-                       $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight($.trim(code).replace('<template>','').replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
+                       var bodyCode = code.substring(code.indexOf('<body>') + 6, code.indexOf('</body>')),
+                           trimmedCode = $.trim(bodyCode).replace('<template>','').replace(/^\s*[\r\n]/gm,'');
+                       $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight(trimmedCode, Prism.languages[language]);
                    }
                 });
 
@@ -70,6 +74,18 @@ var PatternInfoDisplayViewer = {
              var height = $(panels[index]).find('code').height() + 63;
              $(panels).height(height);
          });
+      });
+
+      $('#sg-t-patterninfo')[0].onclick = (function(e) {
+         e.preventDefault();
+         if (that.hidden) {
+            $('.sg-pattern-extra-toggle').not('.active').click();
+         }
+         else {
+            $('.sg-pattern-extra-toggle.active').click();
+         }
+         $(this).text(that.hidden ? 'Hide Pattern Info' : 'Show Pattern Info');
+         that.hidden = !that.hidden;
       });
     }
   },
