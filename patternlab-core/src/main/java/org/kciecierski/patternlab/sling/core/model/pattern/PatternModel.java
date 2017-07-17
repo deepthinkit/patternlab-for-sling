@@ -36,6 +36,10 @@ public class PatternModel {
 
     private final List<BreadcrumbItemModel> breadcrumb;
 
+    private final List<String> embeddedPatterns;
+
+    private final List<String> includingPatterns;
+
     public String getId() {
         return id;
     }
@@ -76,6 +80,13 @@ public class PatternModel {
         return description;
     }
 
+    public List<String> getEmbeddedPatterns() {
+        return embeddedPatterns;
+    }
+
+    public List<String> getIncludingPatterns() {
+        return includingPatterns;
+    }
 
     public PatternModel(Resource resource, String appsPath, String patternId, ResourceResolver adminResourceResolver) throws IOException {
         this.id = PatternLabUtils.constructPatternId(resource, appsPath);
@@ -89,6 +100,8 @@ public class PatternModel {
         this.data = null;
         final String descriptionPath = StringUtils.substringBeforeLast(path, SELECTOR) + DESCRIPTION_EXT;
         this.description = PatternLabUtils.getDataFromFile(descriptionPath, adminResourceResolver);
+        this.embeddedPatterns = Lists.newArrayList();
+        this.includingPatterns = Lists.newArrayList();
     }
 
     public PatternModel(Resource resource, String appsPath, String patternId, String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {
@@ -106,7 +119,8 @@ public class PatternModel {
         this.code = PatternLabUtils.getDataFromFile(path, adminResourceResolver);
         this.data = PatternLabUtils.getDataFromFile(dataPath, adminResourceResolver);
         this.description = constructDescription(jsonDataFile, templateName, adminResourceResolver);
-
+        this.embeddedPatterns = Lists.newArrayList();
+        this.includingPatterns = Lists.newArrayList();
     }
 
     private String constructDescription(String jsonDataFile, String templateName, ResourceResolver adminResourceResolver) throws IOException {

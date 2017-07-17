@@ -2,7 +2,6 @@ package org.kciecierski.patternlab.sling.core.service.impl.category;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -10,9 +9,9 @@ import org.apache.sling.api.resource.ValueMap;
 import org.kciecierski.patternlab.sling.core.model.category.CategoryModel;
 import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
 import org.kciecierski.patternlab.sling.core.service.api.category.CategoryFactory;
+import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,7 +48,8 @@ public class CategoryFactoryImpl implements CategoryFactory {
         return null;
     }
 
-    private void updateSubCategoriesAndPatterns(Resource resource, List<CategoryModel> subCategories, List<PatternModel> patterns, CategoryModel parentCategory, String appsPath, String patternId) throws IOException {
+    private void updateSubCategoriesAndPatterns(Resource resource, List<CategoryModel> subCategories, List<PatternModel> patterns,
+                                                CategoryModel parentCategory, String appsPath, String patternId) throws IOException {
         if (isHtlFile(resource)) {
             final List<String> templateNames = extractTemplatesFromFile(resource);
             if (CollectionUtils.isEmpty(templateNames)) {
@@ -65,7 +65,8 @@ public class CategoryFactoryImpl implements CategoryFactory {
         }
     }
 
-    private List<PatternModel> getTemplatesPatterns(Resource resource, String appsPath, String patternId, CategoryModel currentCategory, List<String> templateNames) throws IOException {
+    private List<PatternModel> getTemplatesPatterns(Resource resource, String appsPath, String patternId, CategoryModel currentCategory,
+                                                    List<String> templateNames) throws IOException {
         List<PatternModel> templatesPatterns = Lists.newArrayList();
         final Resource folderResource = resource.getParent();
         final List<String> jsonDataFiles = getJsonDataFiles(folderResource, StringUtils.substringBefore(resource.getName(), ".html"));
@@ -121,21 +122,8 @@ public class CategoryFactoryImpl implements CategoryFactory {
     }
 
 
-    private List<String> extractTemplatesFromFile(Resource resource) {
-        final Resource fileContentResource = resource.getChild(JCR_CONTENT);
-        if (fileContentResource != null) {
-            final ValueMap fileContentProperties = fileContentResource.adaptTo(ValueMap.class);
-            final InputStream jcrData = fileContentProperties.get(JCR_DATA, InputStream.class);
-            try {
-                final String fileContent = IOUtils.toString(jcrData);
-                return extractTemplatesFromFileContent(fileContent);
-            } catch (IOException e) {
-            }
-        }
-        return null;
-    }
-
-    private List<String> extractTemplatesFromFileContent(String fileContent) {
+    private List<String> extractTemplatesFromFile(Resource resource) throws IOException {
+        final String fileContent = PatternLabUtils.getDataFromFile(resource);
         final List<String> templates = Lists.newArrayList();
 
         final Matcher matcher = DATA_SLY_TEMPLATE_PATTERN.matcher(fileContent);
@@ -144,7 +132,6 @@ public class CategoryFactoryImpl implements CategoryFactory {
         }
         return templates;
     }
-
 
     private String getPrimaryType(Resource resource) {
         final ValueMap resourceProperties = resource.adaptTo(ValueMap.class);

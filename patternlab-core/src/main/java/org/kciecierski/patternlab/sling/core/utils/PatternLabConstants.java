@@ -67,6 +67,15 @@ public final class PatternLabConstants {
 
     public static final Pattern DATA_SLY_TEMPLATE_PATTERN = Pattern.compile("data-sly-template.([^ =>]*)([^>]*)>");
 
+    public static final Pattern DATA_SLY_TEMPLATE_TAG_PATTERN = Pattern.compile("<template([^>]*)data-sly-template.([^ =>]*)([^>]*)>(?:(?!</template>).)*</template>");
+
+    public static final Pattern DATA_SLY_INCLUDE_PATTERN = Pattern.compile("data-sly-include=\"([^\"]*)\"");
+
+    public static final Pattern DATA_SLY_CALL_TAG_PATTERN = Pattern.compile("data-sly-call=\"\\$\\{([^\\.]*)\\.([^ ]*)([^\\}]*)\\}\"");
+
+    public static final String DATA_SLY_USE_TEMPLATE_PATTERN =  "data-sly-use.%s=\"([^\"]*)\"";
+
+
     private PatternLabConstants() {
         //constants class
     }

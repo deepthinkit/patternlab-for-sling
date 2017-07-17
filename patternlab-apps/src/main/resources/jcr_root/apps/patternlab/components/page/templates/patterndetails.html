@@ -1,13 +1,25 @@
 <template data-sly-template.template="${@ pattern, currentPagePath}">
-    <div class="sg-modal-content-inner" data-sly-test="{pattern.description || pattern.code || pattern.data}">
+    <div class="sg-modal-content-inner">
         <div class="sg-pattern-extra-inner">
-            <div class="sg-pattern-extra-info" data-sly-test="${pattern.description}">
-                <div  class="sg-pattern-desc">
+            <div class="sg-pattern-extra-info" data-sly-test="${pattern.description || pattern.embeddedPatterns || pattern.includingPatterns}">
+                <div class="sg-pattern-desc" data-sly-test="${pattern.description}">
                     <p>${pattern.description @ context='html'}</p>
-                </div><!--end .sg-pattern-desc-->
-            </div><!--end .sg-pattern-extra-info-->
+                </div>
+                <p class="sg-pattern-lineage" data-sly-test="${pattern.embeddedPatterns}">
+                    Contains the following patterns:
+                    <span id="sg-code-lineage-fill" data-sly-list.embeddedPattern="${pattern.embeddedPatterns}">
+                       <a href="${currentPagePath}.pattern.${embeddedPattern}.html" class="">${embeddedPattern}</a>,
+                    </span>
+                </p>
+                <p class="sg-pattern-lineage" data-sly-test="${pattern.includingPatterns}">
+                    Included in the following patterns:
+                    <span id="sg-code-lineager-fill" data-sly-list.includingPattern="${pattern.includingPatterns}">
+                       <a href="${currentPagePath}.pattern.${includingPattern}.html" class="">${includingPattern}</a>,
+                    </span>
+                </p>
+            </div>
 
-            <div class="sg-pattern-extra-code" data-sly-test="${pattern.code || pattern.data}">
+            <div class="sg-pattern-extra-code">
 
                 <div class="sg-tabs">
                     <ul class="sg-tabs-list">
@@ -20,7 +32,7 @@
                         <li>
                             <a href="#">HTML</a>
                         </li>
-                    </ul><!--end .sg-tabs-list-->
+                    </ul>
 
                     <div class="sg-tabs-content">
                         <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-sly-test="${pattern.code}" data-code="${pattern.code}">
@@ -35,18 +47,15 @@
                                 </code>
                             </pre>
                         </div>
-                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-link="${currentPagePath}/${pattern.id}.raw.html">
+                        <div data-language="markup" class="sg-tabs-panel" style="display: none;" data-link="${currentPagePath}.pattern.${pattern.id}.raw.html">
                             <pre class="language-markup">
                                 <code class="language-markup">
                                 </code>
                             </pre>
                         </div>
-                    </div><!--end .sg-tabs-content-->
-
-                </div><!--end .sg-tabs-->
-
-            </div><!--end .sg-pattern-extra-code-->
-
-        </div><!--end .sg-pattern-extra-inner-->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>

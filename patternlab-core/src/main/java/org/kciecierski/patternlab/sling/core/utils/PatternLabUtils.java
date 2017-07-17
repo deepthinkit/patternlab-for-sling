@@ -63,4 +63,7 @@ public final class PatternLabUtils {
         return IOUtils.toString(inputStream);
     }
 
+    public static String getDataFromFile(Resource resource) throws IOException {
+        return getDataFromFile(resource.getPath(), resource.getResourceResolver());
+    }
 }
