@@ -21,7 +21,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.kciecierski.patternlab.sling</groupId>
+        <groupId>org.deepthinkit.patternlab.sling</groupId>
         <artifactId>patternlab-sling-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -31,7 +31,7 @@
 
     <name>Patternlab For Sling - Apps</name>
     <description>Pattern Lab For Sling - Apps Module</description>
-    <url>https://github.com/kciecierski/patternlab-for-sling</url>
+    <url>https://github.com/deepthinkit/patternlab-for-sling</url>
 
     <build>
         <plugins>

@@ -1,7 +1,8 @@
-package org.kciecierski.patternlab.sling.core.utils;
+package org.deepthinkit.patternlab.sling.core.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -9,36 +10,29 @@ import org.apache.sling.api.resource.ValueMap;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants.*;
+
 /**
- * Created by Kamil Ciecierski on 4/23/2017.
+ * Util class with short methods used across project
  */
 public final class PatternLabUtils {
 
-    public static final String SLING_RESOURCE_TYPE = "sling:resourceType";
-
-    private static final String JCR_TITLE = "jcr:title";
-
-    private static final String JCR_DATA = "jcr:data";
-
-    private static final String JCR_CONTENT = "jcr:content";
-
-    private static final String SLASH = "/";
 
     public static String constructPatternId(Resource resource, String appsPath, String jsonDataFileName, String templateName) {
-        String patternId = StringUtils.substringAfter(resource.getPath(), appsPath + "/");
-        if (StringUtils.endsWith(patternId, ".html")) {
-            patternId = StringUtils.substringBeforeLast(patternId, ".html");
+        String patternId = StringUtils.substringAfter(resource.getPath(), appsPath + SLASH);
+        if (StringUtils.endsWith(patternId, HTML_EXT)) {
+            patternId = StringUtils.substringBeforeLast(patternId, HTML_EXT);
         }
         if (StringUtils.isNotBlank(templateName)) {
-            patternId += "/" + templateName;
+            patternId += SLASH + templateName;
         }
-        final String fileName = StringUtils.substringBeforeLast(resource.getName(), ".html");
-        final String dataFileSuffix = StringUtils.substringBetween(jsonDataFileName, fileName + ".", ".js");
+        final String fileName = StringUtils.substringBeforeLast(resource.getName(), HTML_EXT);
+        final String dataFileSuffix = StringUtils.substringBetween(jsonDataFileName, fileName + SELECTOR, DATA_EXT);
         if (StringUtils.isNotBlank(dataFileSuffix)) {
-            patternId += "/" + dataFileSuffix;
+            patternId += SLASH + dataFileSuffix;
 
         }
-        return StringUtils.replace(patternId, SLASH, "-");
+        return StringUtils.replace(patternId, SLASH, PATTERN_ID_REPLACEMENT);
     }
 
     public static String constructPatternId(Resource resource, String appsPath) {
@@ -65,5 +59,32 @@ public final class PatternLabUtils {
 
     public static String getDataFromFile(Resource resource) throws IOException {
         return getDataFromFile(resource.getPath(), resource.getResourceResolver());
+    }
+
+    public static boolean isRawSelectorPresent(SlingHttpServletRequest request) {
+        final String[] selectors = request.getRequestPathInfo().getSelectors();
+        if (selectors != null) {
+            for (String selector : selectors)
+                if (StringUtils.equalsIgnoreCase(selector, RAW_SELECTOR)) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    public static String getPatternIdFromSelector(SlingHttpServletRequest request) {
+        final String[] selectors = request.getRequestPathInfo().getSelectors();
+        if (selectors != null) {
+            for (int i = 0; i < selectors.length; ++i) {
+                if (StringUtils.equalsIgnoreCase(selectors[i], PATTERN_SELECTOR) && i + 1 < selectors.length) {
+                    return selectors[i + 1];
+                }
+            }
+        }
+        return null;
+    }
+
+    private PatternLabUtils() {
+        //util class
     }
 }

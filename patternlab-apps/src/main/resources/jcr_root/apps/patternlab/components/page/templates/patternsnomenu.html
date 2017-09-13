@@ -2,7 +2,8 @@
     <sly data-sly-list.category="${categories}">
         <sly data-sly-test="${category.displayed}">
             <sly data-sly-list.pattern="${category.patterns}">
-                <sly data-sly-test="${pattern.displayed}" data-sly-resource="${ @path=pattern.id, resourceType='/apps/patternlab/components/pattern', wcmmode='disabled'}"></sly>
+                <sly data-sly-test="${pattern.displayed}"
+                     data-sly-use.model="${'org.deepthinkit.patternlab.sling.core.render.RenderPatternUse' @ template=pattern.template, path=pattern.path, data=pattern.dataPath}"></sly>
             </sly>
             <sly data-sly-test="${category.subCategories}" data-sly-use.patternsnomenu="templates/patternsnomenu.html" data-sly-call="${patternsnomenu.template @ categories=category.subCategories}"></sly>
         </sly>

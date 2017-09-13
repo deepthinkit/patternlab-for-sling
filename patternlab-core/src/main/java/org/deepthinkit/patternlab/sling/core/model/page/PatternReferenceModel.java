@@ -1,7 +1,7 @@
-package org.kciecierski.patternlab.sling.core.model.page;
+package org.deepthinkit.patternlab.sling.core.model.page;
 
 /**
- * Created by Kamil Ciecierski on 14-Jul-17.
+ * Simple class for representing referenced Pattern
  */
 public class PatternReferenceModel {
 

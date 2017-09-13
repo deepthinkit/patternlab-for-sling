@@ -1,6 +1,6 @@
 # Pattern Lab For Sling
 
-![Pattern Lab For Sling](https://raw.githubusercontent.com/kciecierski/patternlab-for-sling/master/img/pattern-lab-for-sling.jpg)
+![Pattern Lab For Sling](https://raw.githubusercontent.com/deepthinkit/patternlab-for-sling/master/img/pattern-lab-for-sling.jpg)
 
 ## Introducing atomic design to Sling
 
@@ -22,7 +22,7 @@ A visual _design system_ is built out of the core components of typography, layo
 
 Atomic design distinguishes five distinct levels, each of them represented by different type of Patterns:
 
-![Pattern Lab For Sling - patterns](https://raw.githubusercontent.com/kciecierski/patternlab-for-sling/master/img/atomic-web-design.gif)
+![Pattern Lab For Sling - patterns](https://raw.githubusercontent.com/deepthinkit/patternlab-for-sling/master/img/atomic-web-design.gif)
 
 UI Patterns can be included inside each other like Russian nesting dolls.
 Because of that, applying atomic design to your application allows to maximise reusing of HTML markup, reduce technical debt avoiding code duplication and accelerate implementation of new features.
@@ -87,7 +87,7 @@ The parameters can be also nested:
 
 Base on the file structure of Patterns in application, Pattern Lab For Sling is building proper hierarchical menu:
 
-![Pattern Lab For Sling - structure](https://raw.githubusercontent.com/kciecierski/patternlab-for-sling/master/img/structure.jpg)
+![Pattern Lab For Sling - structure](https://raw.githubusercontent.com/deepthinkit/patternlab-for-sling/master/img/structure.jpg)
 
 ### Grouping and displaying subset of Patterns
 
@@ -118,11 +118,11 @@ This is the client side functionality coming from original Pattern Lab, allowing
 ## Features in development
 * previewing HTL templates and HTML as per original Pattern Lab
 * searching patterns as per original Pattern Lab
-* [AEM addon](https://github.com/kciecierski/patternlab-for-sling-aem-addon)
+* [AEM addon](https://github.com/deepthinkit/patternlab-for-sling-aem-addon)
 
 ## Demo
 
-Based on https://github.com/kciecierski/patternlab-for-sling-demo
+Based on https://github.com/deepthinkit/patternlab-for-sling-demo
 
 Link to live demo page to be added.
 
@@ -136,11 +136,11 @@ Link to live demo page to be added.
 
 ### 1. Run Sling
 
-    java -jar org.apache.sling.launchpad-8.jar
+    java -jar org.apache.sling.launchpad-9.jar
 
 By default, it is running on port 8080, you can change it with -p parameter:
 
-    java -jar org.apache.sling.launchpad-8.jar -p <port>
+    java -jar org.apache.sling.launchpad-9.jar -p <port>
 
 ### 2. Check out and install Pattern Lab For Sling
 
@@ -172,4 +172,4 @@ it can be accessed with link:
 
     http://<sling.host>:<sling.port>/etc/pattern-lab/pattern-lab-demo.html
 
-You can find example of Sling application under in this repository: https://github.com/kciecierski/patternlab-for-sling-demo
+You can find example of Sling application under in this repository: https://github.com/deepthinkit/patternlab-for-sling-demo

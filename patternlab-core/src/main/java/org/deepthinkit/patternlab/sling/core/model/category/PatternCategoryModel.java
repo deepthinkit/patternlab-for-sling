@@ -1,27 +1,27 @@
-package org.kciecierski.patternlab.sling.core.model.category;
+package org.deepthinkit.patternlab.sling.core.model.category;
 
 import com.google.common.collect.Lists;
-import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
-import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
+import org.deepthinkit.patternlab.sling.core.utils.PatternLabUtils;
+import org.deepthinkit.patternlab.sling.core.model.pattern.PatternModel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
 import java.util.List;
 
-public class CategoryModel {
+public class PatternCategoryModel {
 
-    private final List<CategoryModel> subCategories;
+    private final List<PatternCategoryModel> subCategories;
 
     private final List<PatternModel> patterns;
 
-    private final List<CategoryModel> breadcrumb;
+    private final List<PatternCategoryModel> breadcrumb;
 
     private final String name;
 
     private final String id;
 
-    private final CategoryModel parentCategory;
+    private final PatternCategoryModel parentCategory;
 
     public String getName() {
         return name;
@@ -31,7 +31,7 @@ public class CategoryModel {
         return id;
     }
 
-    public CategoryModel(Resource resource, String appsPath, List<CategoryModel> subCategories, List<PatternModel> patterns, String patternId, CategoryModel parentCategory) {
+    public PatternCategoryModel(Resource resource, String appsPath, List<PatternCategoryModel> subCategories, List<PatternModel> patterns, PatternCategoryModel parentCategory) {
         this.subCategories = subCategories;
         this.id = PatternLabUtils.constructPatternId(resource, appsPath);
         this.name = StringUtils.lowerCase(PatternLabUtils.getResourceTitleOrName(resource));
@@ -40,7 +40,7 @@ public class CategoryModel {
         this.patterns = patterns;
     }
 
-    public List<CategoryModel> getSubCategories() {
+    public List<PatternCategoryModel> getSubCategories() {
         return subCategories;
     }
 
@@ -49,15 +49,15 @@ public class CategoryModel {
     }
 
     public boolean isDisplayed() {
-        return patterns.stream().anyMatch(PatternModel::isDisplayed) || subCategories.stream().anyMatch(CategoryModel::isDisplayed);
+        return patterns.stream().anyMatch(PatternModel::isDisplayed) || subCategories.stream().anyMatch(PatternCategoryModel::isDisplayed);
     }
 
-    public CategoryModel getParentCategory() {
+    public PatternCategoryModel getParentCategory() {
         return parentCategory;
     }
 
     private boolean anySubCategoryDisplayed() {
-        for (CategoryModel subCategory : subCategories) {
+        for (PatternCategoryModel subCategory : subCategories) {
             if (subCategory.isValid()) {
                 return true;
             }
@@ -65,9 +65,9 @@ public class CategoryModel {
         return false;
     }
 
-    private List<CategoryModel> constructBreadcrumb() {
-        List<CategoryModel> patternBreadcrumb = Lists.newArrayList(this);
-        CategoryModel patternParentCategory = getParentCategory();
+    private List<PatternCategoryModel> constructBreadcrumb() {
+        List<PatternCategoryModel> patternBreadcrumb = Lists.newArrayList(this);
+        PatternCategoryModel patternParentCategory = getParentCategory();
         while (patternParentCategory != null) {
             patternBreadcrumb.add(patternParentCategory);
             patternParentCategory = patternParentCategory.getParentCategory();
@@ -80,7 +80,7 @@ public class CategoryModel {
         return patterns;
     }
 
-    public List<CategoryModel> getBreadcrumb() {
+    public List<PatternCategoryModel> getBreadcrumb() {
         return breadcrumb;
     }
 }

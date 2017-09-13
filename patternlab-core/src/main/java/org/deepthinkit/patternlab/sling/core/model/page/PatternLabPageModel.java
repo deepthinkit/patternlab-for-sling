@@ -1,23 +1,24 @@
-package org.kciecierski.patternlab.sling.core.model.page;
+package org.deepthinkit.patternlab.sling.core.model.page;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.Via;
-import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.kciecierski.patternlab.sling.core.model.category.CategoryModel;
-import org.kciecierski.patternlab.sling.core.model.pattern.PatternModel;
-import org.kciecierski.patternlab.sling.core.service.api.category.CategoryFactory;
-import org.kciecierski.patternlab.sling.core.service.impl.category.CategoryFactoryImpl;
-import org.kciecierski.patternlab.sling.core.utils.PatternLabConstants;
-import org.kciecierski.patternlab.sling.core.utils.PatternLabUtils;
+import org.deepthinkit.patternlab.sling.core.model.category.PatternCategoryModel;
+import org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants;
+import org.deepthinkit.patternlab.sling.core.utils.PatternLabUtils;
+import org.deepthinkit.patternlab.sling.core.model.category.factory.PatternCategoryFactory;
+import org.deepthinkit.patternlab.sling.core.model.category.factory.impl.PatternPatternCategoryFactoryImpl;
+import org.deepthinkit.patternlab.sling.core.model.pattern.PatternModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -29,13 +30,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.kciecierski.patternlab.sling.core.utils.PatternLabConstants.*;
-
+/**
+ * Sling Model responsible for generating, updating and rendering Pattern Lab Page
+ */
 @Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class PatternLabPageModel {
 
-    private static final String BACK_PATH = "..";
-    public static final String JAVA_WHITESPACE_REGEX = "\r\n|\r|\n";
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatternLabPageModel.class);
+
+    private static final String FILESYSTEM_BACK_PATH = "..";
+
+    private static final String JAVA_WHITESPACE_REGEX = "\r\n|\r|\n";
+
+    private static final String SINGLE_WHITESPACE = " ";
 
     @Inject
     @Via("resource")
@@ -49,15 +56,12 @@ public class PatternLabPageModel {
 
     private boolean rawMode;
 
-    private List<CategoryModel> categories;
+    private List<PatternCategoryModel> categories;
 
     @Self
     private SlingHttpServletRequest request;
 
-    @OSGiService
-    private ResourceResolverFactory resourceResolverFactory;
-
-    private CategoryFactory categoryFactory;
+    private PatternCategoryFactory patternCategoryFactory;
 
     public String getAppsPath() {
         return appsPath;
@@ -79,32 +83,27 @@ public class PatternLabPageModel {
         return rawMode;
     }
 
-    public List<CategoryModel> getCategories() {
+    public List<PatternCategoryModel> getCategories() {
         return categories;
     }
 
     @PostConstruct
     private void constructPatternLabPageModel() {
-        rawMode = getRawSelector();
-        patternId = getPatternIdSelector();
+        final Resource pageContentResource = request.getResource();
+        rawMode = PatternLabUtils.isRawSelectorPresent(request);
+        patternId = PatternLabUtils.getPatternIdFromSelector(request);
+        patternCategoryFactory = new PatternPatternCategoryFactoryImpl(request.getResourceResolver());
+        currentPagePath = pageContentResource.getPath();
 
-        ResourceResolver adminResourceResolver = null;
         try {
-            adminResourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-            categoryFactory = new CategoryFactoryImpl(adminResourceResolver);
-            final Resource pageContentResource = request.getResource();
-            currentPagePath = pageContentResource.getPath();
-            constructCategories(pageContentResource, getPatternId());
-            createOrUpdatePatternComponents(pageContentResource, getPatternId(), adminResourceResolver);
+            constructCategories(pageContentResource);
             constructSearchPatternResults();
             constructPatternsReferences();
-        } catch (IOException | LoginException e) {
-            e.printStackTrace();
-        } finally {
-            if (adminResourceResolver != null && adminResourceResolver.isLive()) {
-                adminResourceResolver.close();
-            }
+
+        } catch (IOException e) {
+            LOGGER.error("Error during constructing Pattern Lab page:", e);
         }
+
     }
 
     private void constructPatternsReferences() {
@@ -151,18 +150,18 @@ public class PatternLabPageModel {
     }
 
     private String extractNoTemplateCode(String patternCode) {
-        String noTemplateCode = StringUtils.EMPTY;
-        final Matcher matcher = DATA_SLY_TEMPLATE_TAG_PATTERN.matcher(patternCode);
+        StringBuilder noTemplateCode = new StringBuilder(StringUtils.EMPTY);
+        final Matcher matcher = PatternLabConstants.DATA_SLY_TEMPLATE_TAG_PATTERN.matcher(patternCode);
         int index = 0;
         while (matcher.find()) {
-            noTemplateCode += StringUtils.substring(patternCode, index, matcher.start());
+            noTemplateCode.append(StringUtils.substring(patternCode, index, matcher.start()));
             index = matcher.end();
         }
-        return noTemplateCode;
+        return noTemplateCode.toString();
     }
 
     private String extractTemplateCode(String template, String patternCode) {
-        final Matcher matcher = PatternLabConstants.DATA_SLY_TEMPLATE_TAG_PATTERN.matcher(patternCode.replaceAll(JAVA_WHITESPACE_REGEX, " "));
+        final Matcher matcher = PatternLabConstants.DATA_SLY_TEMPLATE_TAG_PATTERN.matcher(patternCode.replaceAll(JAVA_WHITESPACE_REGEX, SINGLE_WHITESPACE));
         while (matcher.find()) {
             final String matchedTemplate = matcher.group(2);
             if (StringUtils.equals(matchedTemplate, template)) {
@@ -175,7 +174,7 @@ public class PatternLabPageModel {
 
     private Set<PatternReferenceModel> getHtlTemplateCallPaths(String patternCode, String projectSlingPrefix, String projectName, String currentPatternPath) {
         final Set<PatternReferenceModel> htlTemplateUsePaths = Sets.newHashSet();
-        final Matcher matcher = DATA_SLY_CALL_TAG_PATTERN.matcher(patternCode);
+        final Matcher matcher = PatternLabConstants.DATA_SLY_CALL_TAG_PATTERN.matcher(patternCode);
         while (matcher.find()) {
             final String templatePathUseName = matcher.group(1);
             final String templateName = matcher.group(2);
@@ -199,7 +198,7 @@ public class PatternLabPageModel {
 
     private Set<PatternReferenceModel> getHtlIncludePaths(String patternCode, String projectSlingPrefix, String projectName, String currentPatternPath) {
         final Set<PatternReferenceModel> htlIncludesForPatterns = Sets.newHashSet();
-        final Matcher matcher = DATA_SLY_INCLUDE_PATTERN.matcher(patternCode);
+        final Matcher matcher = PatternLabConstants.DATA_SLY_INCLUDE_PATTERN.matcher(patternCode);
         while (matcher.find()) {
             final String path = resolveAbsolutePathToPattern(matcher.group(1), projectSlingPrefix, projectName, currentPatternPath);
             htlIncludesForPatterns.add(new PatternReferenceModel(path));
@@ -216,19 +215,19 @@ public class PatternLabPageModel {
             return PatternLabConstants.SLASH + projectSlingPrefix + PatternLabConstants.SLASH + path;
         }
         String[] pathElements = StringUtils.split(path, PatternLabConstants.SLASH);
-        String absolutePath = StringUtils.substringBeforeLast(currentPatternPath, PatternLabConstants.SLASH);
+        StringBuilder absolutePath = new StringBuilder(StringUtils.substringBeforeLast(currentPatternPath, PatternLabConstants.SLASH));
         for (String pathElement : pathElements) {
-            if (StringUtils.equals(pathElement, BACK_PATH)) {
-                absolutePath = StringUtils.substringBeforeLast(currentPatternPath, PatternLabConstants.SLASH);
+            if (StringUtils.equals(pathElement, FILESYSTEM_BACK_PATH)) {
+                absolutePath = new StringBuilder(StringUtils.substringBeforeLast(currentPatternPath, PatternLabConstants.SLASH));
             } else {
-                absolutePath += PatternLabConstants.SLASH + pathElement;
+                absolutePath.append(PatternLabConstants.SLASH).append(pathElement);
             }
         }
 
-        return absolutePath;
+        return absolutePath.toString();
     }
 
-    private List<PatternModel> getAllCategoryPatterns(CategoryModel category) {
+    private List<PatternModel> getAllCategoryPatterns(PatternCategoryModel category) {
         if (category.getSubCategories().size() > 0) {
             List<PatternModel> subCategoryPatterns = category.getSubCategories().stream().flatMap(subCategory ->
                     getAllCategoryPatterns(subCategory).stream()).collect(Collectors.toList());
@@ -244,79 +243,22 @@ public class PatternLabPageModel {
         searchPatternResults = new ObjectMapper().writeValueAsString(patternIds);
     }
 
-    private List<String> constructSearchPatternsResult(CategoryModel categoryModel) {
+    private List<String> constructSearchPatternsResult(PatternCategoryModel patternCategoryModel) {
         List<String> categoryResults = Lists.newArrayList();
-        categoryResults.add(categoryModel.getId());
-        categoryResults.addAll(categoryModel.getPatterns().stream().map(PatternModel::getId).collect(Collectors.toList()));
-        categoryModel.getSubCategories().stream().forEach(category -> categoryResults.addAll(constructSearchPatternsResult(category)));
+        categoryResults.add(patternCategoryModel.getId());
+        categoryResults.addAll(patternCategoryModel.getPatterns().stream().map(PatternModel::getId).collect(Collectors.toList()));
+        patternCategoryModel.getSubCategories().forEach(category -> categoryResults.addAll(constructSearchPatternsResult(category)));
         return categoryResults;
     }
 
-    private void createOrUpdatePatternComponents(Resource pageContentResource, String patternId, ResourceResolver adminResourceResolver) throws IOException {
-        for (CategoryModel category : categories) {
-            createOrUpdatePatternComponents(category, pageContentResource, patternId, adminResourceResolver);
-        }
-    }
 
-    private void createOrUpdatePatternComponents(CategoryModel category, Resource pageContentResource, String patternId, ResourceResolver adminResourceResolver) throws IOException {
-        for (PatternModel pattern : category.getPatterns()) {
-            if (StringUtils.isBlank(patternId) || StringUtils.startsWith(pattern.getId(), patternId)) {
-                createOrUpdatePatternComponent(pattern, pageContentResource, adminResourceResolver);
-            }
-        }
-        for (CategoryModel subCategory : category.getSubCategories()) {
-            createOrUpdatePatternComponents(subCategory, pageContentResource, patternId, adminResourceResolver);
-        }
-
-    }
-
-    private void createOrUpdatePatternComponent(PatternModel pattern, Resource pageContentResource, ResourceResolver adminResourceResolver) throws IOException {
-        final String componentName = pattern.getId();
-        if (pageContentResource.getChild(componentName) == null) {
-            adminResourceResolver.create(pageContentResource, componentName, Maps.newHashMap());
-            adminResourceResolver.commit();
-        }
-        final Resource patternResource = adminResourceResolver.getResource(pageContentResource, componentName);
-        final ModifiableValueMap patternProperties = patternResource.adaptTo(ModifiableValueMap.class);
-        patternProperties.put(PatternLabUtils.SLING_RESOURCE_TYPE, PATTERN_COMPONENT_RESOURCE_TYPE);
-        patternProperties.put(NAME_PROPERTY, pattern.getName());
-        patternProperties.put(TEMPLATE_PROPERTY, pattern.getTemplate());
-        patternProperties.put(DATA_PROPERTY, pattern.getDataPath());
-        patternProperties.put(PATH_PROPERTY, pattern.getPath());
-        adminResourceResolver.commit();
-    }
-
-    private boolean getRawSelector() {
-        final String[] selectors = request.getRequestPathInfo().getSelectors();
-        if (selectors != null) {
-            for (String selector : selectors) {
-                if (StringUtils.equalsIgnoreCase(selector, RAW_SELECTOR)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private String getPatternIdSelector() {
-        final String[] selectors = request.getRequestPathInfo().getSelectors();
-        if (selectors != null) {
-            for (int i = 0; i < selectors.length; ++i) {
-                if (StringUtils.equalsIgnoreCase(selectors[i], PATTERN_SELECTOR) && i + 1 < selectors.length) {
-                    return selectors[i + 1];
-                }
-            }
-        }
-        return null;
-    }
-
-    private void constructCategories(Resource pageContentResource, String patternId) throws IOException {
+    private void constructCategories(Resource pageContentResource) throws IOException {
         categories = Lists.newArrayList();
         final ResourceResolver resourceResolver = pageContentResource.getResourceResolver();
         final Resource appsPathResource = resourceResolver.getResource(appsPath);
         final Iterator<Resource> appsIterator = appsPathResource.listChildren();
         while (appsIterator.hasNext()) {
-            final CategoryModel category = categoryFactory.createCategory(appsIterator.next(), appsPath, patternId);
+            final PatternCategoryModel category = patternCategoryFactory.createCategory(appsIterator.next(), appsPath, patternId);
             if (category != null && category.isValid()) {
                 categories.add(category);
             }

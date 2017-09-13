@@ -20,7 +20,9 @@
                         <div id="sg-pattern-extra-${pattern.id}" class="sg-pattern-extra"
                              data-sly-use.patterndetails="templates/patterndetails.html"
                              data-sly-call="${patterndetails.template @ pattern=pattern, currentPagePath=currentPagePath}"></div>
-                        <div class="sg-pattern-example" data-sly-resource="${ @path=pattern.id, resourceType='/apps/patternlab/components/pattern'}">
+
+                        <div class="sg-pattern-example">
+                            <iframe class="sg-viewport" frameborder="0" scrolling="no" src="${currentPagePath}.pattern.${pattern.id}.raw.html"></iframe>
                         </div>
                     </div>
                 </sly>
