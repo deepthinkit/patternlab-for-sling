@@ -115,11 +115,6 @@ This is the client side functionality coming from original Pattern Lab, allowing
 * _RANDOM_ - adapts Patterns viewport to any random width
 * _DISCO_ - presents Patterns continuously and randomly in different view ports
 
-## Features in development
-* previewing HTL templates and HTML as per original Pattern Lab
-* searching patterns as per original Pattern Lab
-* [AEM addon](https://github.com/deepthinkit/patternlab-for-sling-aem-addon)
-
 ## Demo
 
 Based on https://github.com/deepthinkit/patternlab-for-sling-demo
@@ -131,7 +126,7 @@ Link to live demo page to be added.
 ### Requirements
 
 * [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [Sling 8](http://sling.apache.org/downloads.cgi) or version with Sling Models >= 1.1.0 (should be compatible with AEM >=6.1)
+* [Sling 9](http://sling.apache.org/downloads.cgi)
 * [Maven 3+](http://maven.apache.org/download.cgi)
 
 ### 1. Run Sling
