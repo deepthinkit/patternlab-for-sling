@@ -2,8 +2,7 @@
     <div class="sg-modal-content-inner">
         <div class="sg-pattern-extra-inner">
             <div class="sg-pattern-extra-info" data-sly-test="${pattern.description || pattern.embeddedPatterns || pattern.includingPatterns}">
-                <div class="sg-pattern-desc" data-sly-test="${pattern.description}">
-                    <p>${pattern.description @ context='html'}</p>
+                <div class="sg-pattern-desc" data-sly-test="${pattern.description}" data-description="${pattern.description @ context='html'}">
                 </div>
                 <p class="sg-pattern-lineage" data-sly-test="${pattern.embeddedPatterns}">
                     Contains the following patterns:

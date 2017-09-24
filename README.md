@@ -55,17 +55,17 @@ As an example, let's consider _/atoms/buttons/button.html_ file containing defin
 
 Adding data files below will cause generation of proper Patterns for each of the template:
 
-* /atoms/buttons/button.js
-* /atoms/buttons/button.1.js
-* /atoms/buttons/button.homepage-example.js
-* /atoms/buttons/button.in-footer.js
+* /atoms/buttons/button.json
+* /atoms/buttons/button.1.json
+* /atoms/buttons/button.homepage-example.json
+* /atoms/buttons/button.in-footer.json
 
 By adding template name to data file, it is possible to specify template specific content data. The files below causes generation of Patterns for _simplebutton_ template only:
 
-* /atoms/buttons/button.simplebutton.js
-* /atoms/buttons/button.simplebutton.1.js
-* /atoms/buttons/button.simplebutton.homepage-example.js
-* /atoms/buttons/button.simplebutton.in-footer.js
+* /atoms/buttons/button.simplebutton.json
+* /atoms/buttons/button.simplebutton.1.json
+* /atoms/buttons/button.simplebutton.homepage-example.json
+* /atoms/buttons/button.simplebutton.in-footer.json
 
 The content of data files is simple JSON with parameters that should be passed into template:
 
@@ -115,6 +115,13 @@ This is the client side functionality coming from original Pattern Lab, allowing
 * _RANDOM_ - adapts Patterns viewport to any random width
 * _DISCO_ - presents Patterns continuously and randomly in different view ports
 
+### Pattern Responsive design validation
+
+Document your patterns using Markdown format by creating files matching names of your pattern and optionally template, for example:
+
+* \atoms\global\colors.md - for all templates in files
+* \atoms\global\colors.brand.md - for _brand_ template in file
+
 ## Demo
 
 Based on https://github.com/deepthinkit/patternlab-for-sling-demo
@@ -159,10 +166,10 @@ and resource value:
     {
         "sling:resourceType" : "patternlab/components/page",
         "patternsPath" : "/apps/patternlab-demo", - root path for HTL templates
-        "headerCss" : ["/etc/designs/patternlab-demo/clientlib/css/style.css", ..], // array of links to CSS files that should be used in header of Pattern
-        "headerJs" : ["", ..], // array of links to JS files that should be used in header of Pattern
-        "footerCss" : ["", ..], // array of links to CSS files that should be used in footer of Pattern
-        "footerJs" : ["", ..]  // array of links to JS files that should be used in footer of Pattern
+        "bodyTag" : "<body class=\"main\">" //optional field allowing to define body start tag with attributes
+        "css" : ["/etc/designs/patternlab-demo/clientlib/css/style.css", ..], // array of links to CSS files that should be used in head of Pattern
+        "headerJs" : ["/etc/designs/patternlab-demo/clientlib/js/jquery.min.js"], // array of links to JS files that should be used in header of Pattern
+        "footerJs" : ["/etc/designs/patternlab-demo/clientlib/js/script.js"]  // array of links to JS files that should be used in footer of Pattern
     }
 
 it can be accessed with link:

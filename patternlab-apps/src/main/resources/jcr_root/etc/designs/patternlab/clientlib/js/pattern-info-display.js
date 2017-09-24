@@ -18,12 +18,22 @@ var PatternInfoDisplayViewer = {
 
       var patternId = toggles[i].getAttribute('data-pattern-id');
 
+      //render description
+      var description = $('#sg-pattern-extra-'+patternId + ' .sg-pattern-desc'),
+          markdownData = description.attr('data-description');
+
+      if (markdownData != undefined && markdownData.length > 0) {
+          var result = window.markdownit().render(markdownData);
+          description.html(result);
+      }
+
       var tabs = $('#sg-pattern-extra-'+patternId + ' .sg-tabs-list > li');
       if (tabs.length > 0) {
          $(tabs[0]).addClass('sg-tab-title-active');
       }
 
       var panels = $('#sg-pattern-extra-'+patternId + ' .sg-tabs-panel');
+
 
       //render markup data with prism
       for (var j = 0; j < panels.length; ++j) {
@@ -36,6 +46,17 @@ var PatternInfoDisplayViewer = {
             var link = panels[j].getAttribute('data-link'),
                 trials = 0;
 
+            function stripScripts(s) {
+                var div = document.createElement('div');
+                div.innerHTML = s;
+                var scripts = div.getElementsByTagName('script');
+                var i = scripts.length;
+                while (i--) {
+                  scripts[i].parentNode.removeChild(scripts[i]);
+                }
+                return div.innerHTML;
+              }
+
             function updateMarkup(url, language, panel) {
                 if (link != null && link.length > 0) {
                     $.ajax({
@@ -44,8 +65,10 @@ var PatternInfoDisplayViewer = {
                        panel: panel,
                        language: language,
                        success: function(code){
-                           var bodyCode = code.substring(code.indexOf('<body>') + 6, code.indexOf('</body>')),
-                               trimmedCode = $.trim(bodyCode).replace('<template>','').replace(/^\s*[\r\n]/gm,'');
+                           var bodyIndex = code.indexOf('<body') + 5,
+                               bodyCode = code.substring(code.indexOf('>',bodyIndex) + 1, code.indexOf('</body>')),
+                               strippedCode = stripScripts(bodyCode),
+                               trimmedCode = $.trim(strippedCode).replace('<template>','').replace(/^\s*[\r\n]/gm,'');
                            $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight(trimmedCode, Prism.languages[language]);
                        },
                        error: function() {
