@@ -119,17 +119,16 @@ This is the client side functionality coming from original Pattern Lab, allowing
 
 Based on https://github.com/deepthinkit/patternlab-for-sling-demo
 
-Link to live demo page to be added.
 
 ## Installation
 
 ### Requirements
 
 * [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
-* [Sling 9](http://sling.apache.org/downloads.cgi)
+* [Sling 9](http://sling.apache.org/downloads.cgi) or AEM 6.3
 * [Maven 3+](http://maven.apache.org/download.cgi)
 
-### 1. Run Sling
+### 1. Run Sling (or AEM)
 
     java -jar org.apache.sling.launchpad-9.jar
 
@@ -141,6 +140,9 @@ By default, it is running on port 8080, you can change it with -p parameter:
 
     mvn clean install -PautoInstallBundle
 
+for AEM 6.3, use dedicated profile
+
+    mvn clean install -PautoInstallBundle -PAEM63
 
 Optionally, you can also override default connection parameters:
 
