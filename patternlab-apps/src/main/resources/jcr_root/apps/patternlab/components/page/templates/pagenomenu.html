@@ -4,12 +4,14 @@
         <title id="title">${properties.jcr:title}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link data-sly-repeat.headerCss="${properties.headerCss}" rel="stylesheet" href="${headerCss}" type="text/css">
-        <script data-sly-repeat.footerCss="${properties.footerCss}" type="text/javascript" src="${footerCss}"></script>
+        <sly data-sly-list.css="${properties.css}">
+            <link  rel="stylesheet" href="${css}" type="text/css">
+        </sly>
+        <script data-sly-repeat.headerJs="${properties.headerJs}" type="text/javascript" src="${headerJs}"></script>
     </head>
-        <body class="${properties.bodyClass}">
+        <sly data-sly-test.customBody="${properties.bodyTag}">${properties.bodyTag @ context='unsafe'}</sly>
+        <sly data-sly-test="${!customBody}"><body></sly>
             <sly data-sly-use.patternsTemplate="/apps/patternlab/components/page/templates/patternsnomenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
-            <link data-sly-repeat.footerCss="${properties.footerCss}" rel="stylesheet" href="${footerCss}" type="text/css">
             <script data-sly-repeat.footerJs="${properties.footerJs}" type="text/javascript" src="${footerJs}"></script>
         </body>
     </html>
