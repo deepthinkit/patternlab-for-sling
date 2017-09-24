@@ -9,7 +9,7 @@
                         <li class="sg-sub-nav" data-sly-test="${category.patterns}" data-sly-repeat.pattern="${category.patterns}">
                             <a class="sg-pop" href="${currentPagePath}.pattern.${pattern.id}.html" target="_top">${pattern.id}</a>
                         </li>
-                        <sly class="sg-acc-panel" data-sly-test="${category.subCategories}" data-sly-use.menu="templates/menu.html"
+                        <sly class="sg-acc-panel" data-sly-test="${category.subCategories}" data-sly-use.menu="/apps/patternlab/components/page/templates/menu.html"
                              data-sly-call="${menu.template @ categories=category.subCategories, id=category.id, currentPagePath=currentPagePath}">
                         </sly>
                         <li><a class="sg-pop" href="${currentPagePath}.pattern.${category.id}.html">View All</a></li>

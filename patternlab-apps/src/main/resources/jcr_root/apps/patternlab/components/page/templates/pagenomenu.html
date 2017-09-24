@@ -8,7 +8,7 @@
         <script data-sly-repeat.footerCss="${properties.footerCss}" type="text/javascript" src="${footerCss}"></script>
     </head>
         <body class="${properties.bodyClass}">
-            <sly data-sly-use.patternsTemplate="templates/patternsnomenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
+            <sly data-sly-use.patternsTemplate="/apps/patternlab/components/page/templates/patternsnomenu.html" data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
             <link data-sly-repeat.footerCss="${properties.footerCss}" rel="stylesheet" href="${footerCss}" type="text/css">
             <script data-sly-repeat.footerJs="${properties.footerJs}" type="text/javascript" src="${footerJs}"></script>
         </body>

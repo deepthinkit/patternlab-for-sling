@@ -10,13 +10,13 @@
             <link rel="shortcut icon" href="/etc/designs/patternlab/clientlib/images/favicon.ico" />
         </head>
         <body id="patternlab-body" data-search="${searchPatternResults}">
-            <sly data-sly-use.header="templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath, patternId=patternId}"></sly>
+            <sly data-sly-use.header="/apps/patternlab/components/page/templates/header.html" data-sly-call="${header.template @ categories=categories, currentPagePath=currentPagePath, patternId=patternId}"></sly>
             <div id="sg-vp-wrap">
                 <div id="sg-cover"></div>
                 <div id="sg-gen-container" class="vp-animate">
                     <div id="sg-viewport" class="vp-animate">
                         <sly data-sly-test="${!patternId}">${properties.jcr:description @ context='html'}</sly>
-                        <sly data-sly-use.patternsTemplate="templates/patternsmenu.html"
+                        <sly data-sly-use.patternsTemplate="/apps/patternlab/components/page/templates/patternsmenu.html"
                              data-sly-call="${patternsTemplate.template @ categories=categories, currentPagePath=currentPagePath}"></sly>
                     </div>
                     <div id="sg-rightpull-container">

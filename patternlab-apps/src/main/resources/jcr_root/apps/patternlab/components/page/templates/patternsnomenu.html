@@ -5,7 +5,7 @@
                 <sly data-sly-test="${pattern.displayed}"
                      data-sly-use.model="${'org.deepthinkit.patternlab.sling.core.render.RenderPatternUse' @ template=pattern.template, path=pattern.path, data=pattern.dataPath}"></sly>
             </sly>
-            <sly data-sly-test="${category.subCategories}" data-sly-use.patternsnomenu="templates/patternsnomenu.html" data-sly-call="${patternsnomenu.template @ categories=category.subCategories}"></sly>
+            <sly data-sly-test="${category.subCategories}" data-sly-use.patternsnomenu="/apps/patternlab/components/page/templates/patternsnomenu.html" data-sly-call="${patternsnomenu.template @ categories=category.subCategories}"></sly>
         </sly>
     </sly>
 </template>
