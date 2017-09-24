@@ -158,7 +158,7 @@ and resource value:
 
     {
         "sling:resourceType" : "patternlab/components/page",
-        "appsPath" : "/apps/patternlab-demo", - root path for HTL templates
+        "patternsPath" : "/apps/patternlab-demo", - root path for HTL templates
         "headerCss" : ["/etc/designs/patternlab-demo/clientlib/css/style.css", ..], // array of links to CSS files that should be used in header of Pattern
         "headerJs" : ["", ..], // array of links to JS files that should be used in header of Pattern
         "footerCss" : ["", ..], // array of links to CSS files that should be used in footer of Pattern

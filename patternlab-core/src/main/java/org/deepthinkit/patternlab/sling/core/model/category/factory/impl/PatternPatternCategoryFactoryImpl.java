@@ -25,18 +25,18 @@ public class PatternPatternCategoryFactoryImpl implements PatternCategoryFactory
         this.resourceResolver = resourceResolver;
     }
 
-    public PatternCategoryModel createCategory(Resource resource, String appsPath, String patternId) throws IOException {
-        return createCategory(resource, appsPath, patternId, null);
+    public PatternCategoryModel createCategory(Resource resource, String patternsPath, String patternId) throws IOException {
+        return createCategory(resource, patternsPath, patternId, null);
     }
 
-    public PatternCategoryModel createCategory(Resource resource, String appsPath, String patternId, PatternCategoryModel parentCategory) throws IOException {
+    public PatternCategoryModel createCategory(Resource resource, String patternsPath, String patternId, PatternCategoryModel parentCategory) throws IOException {
         if (isFolder(resource)) {
             final List<PatternCategoryModel> subCategories = Lists.newArrayList();
             final List<PatternModel> patterns = Lists.newArrayList();
-            final PatternCategoryModel currentCategory = new PatternCategoryModel(resource, appsPath, subCategories, patterns, parentCategory);
+            final PatternCategoryModel currentCategory = new PatternCategoryModel(resource, patternsPath, subCategories, patterns, parentCategory);
             final Iterator<Resource> childResources = resource.listChildren();
             while (childResources.hasNext()) {
-                updateSubCategoriesAndPatterns(childResources.next(), subCategories, patterns, currentCategory, appsPath, patternId);
+                updateSubCategoriesAndPatterns(childResources.next(), subCategories, patterns, currentCategory, patternsPath, patternId);
             }
             return currentCategory;
         }
@@ -44,23 +44,23 @@ public class PatternPatternCategoryFactoryImpl implements PatternCategoryFactory
     }
 
     private void updateSubCategoriesAndPatterns(Resource resource, List<PatternCategoryModel> subCategories, List<PatternModel> patterns,
-                                                PatternCategoryModel parentCategory, String appsPath, String patternId) throws IOException {
+                                                PatternCategoryModel parentCategory, String patternsPath, String patternId) throws IOException {
         if (isHtlFile(resource)) {
             final List<String> templateNames = retrieveTemplatesFromFile(resource);
             if (CollectionUtils.isEmpty(templateNames)) {
-                patterns.add(new PatternModel(resource, appsPath, patternId, this.resourceResolver));
+                patterns.add(new PatternModel(resource, patternsPath, patternId, this.resourceResolver));
             } else {
-                patterns.addAll(getTemplatesPatterns(resource, appsPath, patternId, templateNames));
+                patterns.addAll(getTemplatesPatterns(resource, patternsPath, patternId, templateNames));
             }
         } else if (isFolder(resource)) {
-            final PatternCategoryModel category = createCategory(resource, appsPath, patternId, parentCategory);
+            final PatternCategoryModel category = createCategory(resource, patternsPath, patternId, parentCategory);
             if (category != null && category.isValid()) {
                 subCategories.add(category);
             }
         }
     }
 
-    private List<PatternModel> getTemplatesPatterns(Resource resource, String appsPath, String patternId,
+    private List<PatternModel> getTemplatesPatterns(Resource resource, String patternsPath, String patternId,
                                                     List<String> templateNames) throws IOException {
         List<PatternModel> templatesPatterns = Lists.newArrayList();
         final Resource folderResource = resource.getParent();
@@ -68,10 +68,10 @@ public class PatternPatternCategoryFactoryImpl implements PatternCategoryFactory
         for (String templateName : templateNames) {
             final List<String> templateDedicatedDataFiles = getTemplateDedicatedFiles(templateName, jsonDataFiles, templateNames);
             if (CollectionUtils.isEmpty(templateDedicatedDataFiles)) {
-                templatesPatterns.add(new PatternModel(resource, appsPath, patternId, StringUtils.EMPTY, templateName, this.resourceResolver));
+                templatesPatterns.add(new PatternModel(resource, patternsPath, patternId, StringUtils.EMPTY, templateName, this.resourceResolver));
             } else {
                 for (String jsonDataFileName : templateDedicatedDataFiles) {
-                    templatesPatterns.add(new PatternModel(resource, appsPath, patternId, jsonDataFileName, templateName, this.resourceResolver));
+                    templatesPatterns.add(new PatternModel(resource, patternsPath, patternId, jsonDataFileName, templateName, this.resourceResolver));
                 }
             }
         }

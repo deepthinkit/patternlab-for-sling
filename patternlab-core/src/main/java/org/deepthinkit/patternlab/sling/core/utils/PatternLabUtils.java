@@ -17,8 +17,8 @@ import static org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants.*;
  */
 public final class PatternLabUtils {
 
-    public static String constructPatternId(String patternResourcePath, String appsPath, String templateName, String jsonDataFileName) {
-        final String patternPath = StringUtils.substringAfter(patternResourcePath, appsPath + SLASH);
+    public static String constructPatternId(String patternResourcePath, String patternsPath, String templateName, String jsonDataFileName) {
+        final String patternPath = StringUtils.substringAfter(patternResourcePath, patternsPath + SLASH);
         final StringBuilder patternIdBuilder = new StringBuilder();
         if (StringUtils.endsWith(patternPath, HTML_EXT)) {
             patternIdBuilder.append(StringUtils.substringBeforeLast(patternPath, HTML_EXT));
@@ -38,12 +38,12 @@ public final class PatternLabUtils {
         return StringUtils.replace(patternIdBuilder.toString(), SLASH, PATTERN_ID_REPLACEMENT);
     }
 
-    public static String constructPatternId(String patternResourcePath, String appsPath, String templateName) {
-        return constructPatternId(patternResourcePath, appsPath, templateName, StringUtils.EMPTY);
+    public static String constructPatternId(String patternResourcePath, String patternsPath, String templateName) {
+        return constructPatternId(patternResourcePath, patternsPath, templateName, StringUtils.EMPTY);
     }
 
-    public static String constructPatternId(String patternResourcePath, String appsPath) {
-        return constructPatternId(patternResourcePath, appsPath, StringUtils.EMPTY, StringUtils.EMPTY);
+    public static String constructPatternId(String patternResourcePath, String patternsPath) {
+        return constructPatternId(patternResourcePath, patternsPath, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     public static String getResourceTitleOrName(final Resource resource) {

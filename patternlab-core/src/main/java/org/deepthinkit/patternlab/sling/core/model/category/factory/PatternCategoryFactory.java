@@ -10,8 +10,8 @@ import java.io.IOException;
  */
 public interface PatternCategoryFactory {
 
-    PatternCategoryModel createCategory(Resource resource, String appsPath, String patternDisplayed) throws IOException;
+    PatternCategoryModel createCategory(Resource resource, String patternsPath, String patternDisplayed) throws IOException;
 
-    PatternCategoryModel createCategory(Resource resource, String appsPath, String patternDisplayed, PatternCategoryModel parentCategory) throws IOException;
+    PatternCategoryModel createCategory(Resource resource, String patternsPath, String patternDisplayed, PatternCategoryModel parentCategory) throws IOException;
 }
 

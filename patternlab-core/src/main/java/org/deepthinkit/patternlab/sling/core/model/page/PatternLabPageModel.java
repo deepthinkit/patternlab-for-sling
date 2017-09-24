@@ -40,7 +40,7 @@ public class PatternLabPageModel {
 
     @Inject
     @Via("resource")
-    private String appsPath;
+    private String patternsPath;
 
     private String patternId;
 
@@ -57,8 +57,8 @@ public class PatternLabPageModel {
 
     private PatternCategoryFactory patternCategoryFactory;
 
-    public String getAppsPath() {
-        return appsPath;
+    public String getPatternsPath() {
+        return patternsPath;
     }
 
     public String getCurrentPagePath() {
@@ -103,10 +103,10 @@ public class PatternLabPageModel {
     private void constructCategories(Resource pageContentResource) throws IOException {
         categories = Lists.newArrayList();
         final ResourceResolver resourceResolver = pageContentResource.getResourceResolver();
-        final Resource appsPathResource = resourceResolver.getResource(appsPath);
-        final Iterator<Resource> appsIterator = appsPathResource.listChildren();
+        final Resource patternsPathResource = resourceResolver.getResource(patternsPath);
+        final Iterator<Resource> appsIterator = patternsPathResource.listChildren();
         while (appsIterator.hasNext()) {
-            final PatternCategoryModel category = patternCategoryFactory.createCategory(appsIterator.next(), appsPath, patternId);
+            final PatternCategoryModel category = patternCategoryFactory.createCategory(appsIterator.next(), patternsPath, patternId);
             if (category != null && category.isValid()) {
                 categories.add(category);
             }
@@ -170,10 +170,10 @@ public class PatternLabPageModel {
     }
 
     private void addEmbeddedPattern(List<PatternModel> patternModels, PatternModel currentPattern, HtlScriptModel embeddedPattern) {
-        final String comparedPatternId = PatternLabUtils.constructPatternId(embeddedPattern.getPath(), appsPath, embeddedPattern.getTemplate());
+        final String comparedPatternId = PatternLabUtils.constructPatternId(embeddedPattern.getPath(), patternsPath, embeddedPattern.getTemplate());
         currentPattern.getEmbeddedPatterns().add(comparedPatternId);
 
-        final String currentPatternId = PatternLabUtils.constructPatternId(currentPattern.getPath(), appsPath, currentPattern.getTemplate());
+        final String currentPatternId = PatternLabUtils.constructPatternId(currentPattern.getPath(), patternsPath, currentPattern.getTemplate());
         for (PatternModel comparedPattern : patternModels) {
             if (StringUtils.equals(embeddedPattern.getPath(), comparedPattern.getPath())
                     && (StringUtils.isBlank(embeddedPattern.getTemplate()) ||
