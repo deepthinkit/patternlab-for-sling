@@ -17,26 +17,33 @@ import static org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants.*;
  */
 public final class PatternLabUtils {
 
-
-    public static String constructPatternId(Resource resource, String appsPath, String jsonDataFileName, String templateName) {
-        String patternId = StringUtils.substringAfter(resource.getPath(), appsPath + SLASH);
-        if (StringUtils.endsWith(patternId, HTML_EXT)) {
-            patternId = StringUtils.substringBeforeLast(patternId, HTML_EXT);
+    public static String constructPatternId(String patternResourcePath, String appsPath, String templateName, String jsonDataFileName) {
+        final String patternPath = StringUtils.substringAfter(patternResourcePath, appsPath + SLASH);
+        final StringBuilder patternIdBuilder = new StringBuilder();
+        if (StringUtils.endsWith(patternPath, HTML_EXT)) {
+            patternIdBuilder.append(StringUtils.substringBeforeLast(patternPath, HTML_EXT));
+        } else {
+            patternIdBuilder.append(patternPath);
         }
         if (StringUtils.isNotBlank(templateName)) {
-            patternId += SLASH + templateName;
+            patternIdBuilder.append(SLASH).append(templateName);
         }
-        final String fileName = StringUtils.substringBeforeLast(resource.getName(), HTML_EXT);
-        final String dataFileSuffix = StringUtils.substringBetween(jsonDataFileName, fileName + SELECTOR, DATA_EXT);
-        if (StringUtils.isNotBlank(dataFileSuffix)) {
-            patternId += SLASH + dataFileSuffix;
-
+        if (StringUtils.isNotBlank(jsonDataFileName)) {
+            final String patternFileName = StringUtils.substringAfterLast(patternPath, SLASH);
+            final String fileNameWithoutExt = StringUtils.substringBeforeLast(patternFileName, HTML_EXT);
+            final String dataFileSuffix = StringUtils.substringBetween(jsonDataFileName, fileNameWithoutExt
+                    + SELECTOR, DATA_EXT);
+            patternIdBuilder.append(SLASH).append(StringUtils.defaultString(dataFileSuffix, fileNameWithoutExt));
         }
-        return StringUtils.replace(patternId, SLASH, PATTERN_ID_REPLACEMENT);
+        return StringUtils.replace(patternIdBuilder.toString(), SLASH, PATTERN_ID_REPLACEMENT);
     }
 
-    public static String constructPatternId(Resource resource, String appsPath) {
-        return constructPatternId(resource, appsPath, StringUtils.EMPTY, StringUtils.EMPTY);
+    public static String constructPatternId(String patternResourcePath, String appsPath, String templateName) {
+        return constructPatternId(patternResourcePath, appsPath, templateName, StringUtils.EMPTY);
+    }
+
+    public static String constructPatternId(String patternResourcePath, String appsPath) {
+        return constructPatternId(patternResourcePath, appsPath, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     public static String getResourceTitleOrName(final Resource resource) {

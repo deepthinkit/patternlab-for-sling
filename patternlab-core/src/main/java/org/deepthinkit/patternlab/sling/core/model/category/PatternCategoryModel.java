@@ -33,7 +33,7 @@ public class PatternCategoryModel {
 
     public PatternCategoryModel(Resource resource, String appsPath, List<PatternCategoryModel> subCategories, List<PatternModel> patterns, PatternCategoryModel parentCategory) {
         this.subCategories = subCategories;
-        this.id = PatternLabUtils.constructPatternId(resource, appsPath);
+        this.id = PatternLabUtils.constructPatternId(resource.getPath(), appsPath);
         this.name = StringUtils.lowerCase(PatternLabUtils.getResourceTitleOrName(resource));
         this.parentCategory = parentCategory;
         this.breadcrumb = constructBreadcrumb();

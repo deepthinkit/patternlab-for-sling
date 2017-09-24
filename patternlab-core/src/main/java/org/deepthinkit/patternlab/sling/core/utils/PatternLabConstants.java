@@ -3,7 +3,7 @@ package org.deepthinkit.patternlab.sling.core.utils;
 import java.util.regex.Pattern;
 
 /**
- * Class with contants used across project
+ * Class with constants used across project
  */
 public final class PatternLabConstants {
 
@@ -13,8 +13,6 @@ public final class PatternLabConstants {
 
     public static final String PATTERN_SELECTOR = "pattern";
 
-    public static final String NAME_PROPERTY = "name";
-
     public static final String PATH_PROPERTY = "path";
 
     public static final String TEMPLATE_PROPERTY = "template";
@@ -22,8 +20,6 @@ public final class PatternLabConstants {
     public static final String DATA_PROPERTY = "data";
 
     public static final String PATTERN_ID_REPLACEMENT = "-";
-
-    public static final String PATTERN_RESOURCE_TYPE = "/apps/patternlab/components/pattern";
 
     public static final String JCR_PRIMARY_TYPE = "jcr:primaryType";
 
@@ -42,8 +38,6 @@ public final class PatternLabConstants {
     public static final String SLING_FOLDER = "sling:Folder";
 
     public static final String SLING_ORDERED_FOLDER = "sling:OrderedFolder";
-
-    public static final String SLING_RESOURCE_TYPE = "sling:resourceType";
 
     public static final String JCR_TITLE = "jcr:title";
 

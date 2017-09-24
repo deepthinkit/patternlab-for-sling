@@ -1,5 +1,6 @@
 package org.deepthinkit.patternlab.sling.core.render.context;
 
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.scripting.SlingScriptHelper;
 import org.apache.sling.scripting.sightly.SightlyException;
 import org.apache.sling.scripting.sightly.extension.RuntimeExtension;

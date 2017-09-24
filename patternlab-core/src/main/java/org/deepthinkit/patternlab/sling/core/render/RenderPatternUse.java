@@ -4,16 +4,18 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.scripting.SlingScriptHelper;
+import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
+import org.apache.sling.scripting.sightly.SightlyException;
 import org.apache.sling.scripting.sightly.java.compiler.RenderUnit;
 import org.apache.sling.scripting.sightly.pojo.Use;
 import org.apache.sling.scripting.sightly.render.RenderContext;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.deepthinkit.patternlab.sling.core.render.unit.TemplateCallRenderUnit;
-import org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants;
-import org.deepthinkit.patternlab.sling.core.utils.PatternLabUtils;
 import org.deepthinkit.patternlab.sling.core.render.context.RenderContextImpl;
 import org.deepthinkit.patternlab.sling.core.render.unit.IncludePatternRenderUnit;
 import org.deepthinkit.patternlab.sling.core.render.unit.PatternConfiguration;
+import org.deepthinkit.patternlab.sling.core.render.unit.TemplateCallRenderUnit;
+import org.deepthinkit.patternlab.sling.core.utils.PatternLabConstants;
+import org.deepthinkit.patternlab.sling.core.utils.PatternLabUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,21 +38,6 @@ public class RenderPatternUse implements Use {
 
     private static final String SLING_BINDING = "sling";
 
-    private String id;
-
-    private String currentPagePath;
-
-    private boolean rawMode;
-
-    public String getCurrentPagePath() {
-        return currentPagePath;
-    }
-
-    public boolean isRawMode() {
-        return rawMode;
-    }
-
-
     @Override
     public void init(Bindings bindings) {
         final PrintWriter out = (PrintWriter) bindings.get(OUT_BINDING);
@@ -59,14 +46,8 @@ public class RenderPatternUse implements Use {
         final String path = (String) bindings.get(PatternLabConstants.PATH_PROPERTY);
         final String data = (String) bindings.get(PatternLabConstants.DATA_PROPERTY);
         final SlingScriptHelper slingScriptHelper = (SlingScriptHelper) bindings.get(SLING_BINDING);
-
-        currentPagePath = request.getResource().getParent().getPath();
-        rawMode = PatternLabUtils.isRawSelectorPresent(request);
-
-        if (isRawMode()) {
-            final Map<String, Object> patternData = retrievePatternData(request, data);
-            renderPattern(patternData, bindings, slingScriptHelper, out, template, path);
-        }
+        final Map<String, Object> patternData = retrievePatternData(request, data);
+        renderPattern(template, path, patternData, bindings, slingScriptHelper, out);
     }
 
     private Map<String, Object> retrievePatternData(SlingHttpServletRequest request, String data) {
@@ -81,8 +62,8 @@ public class RenderPatternUse implements Use {
         return Maps.newHashMap();
     }
 
-    private void renderPattern(Map<String, Object> patternData, Bindings bindings, SlingScriptHelper slingScriptHelper,
-                               PrintWriter out, String template, String path) {
+    private void renderPattern(String template, String path, Map<String, Object> patternData, Bindings bindings, SlingScriptHelper slingScriptHelper,
+                               PrintWriter out) {
         final RenderContext renderContext = RenderContextImpl.createFrom(bindings, slingScriptHelper);
         final PatternConfiguration patternConfiguration = PatternConfiguration.extractFromPatternData(patternData);
         final RenderUnit renderUnit = StringUtils.isNotBlank(template) ?
