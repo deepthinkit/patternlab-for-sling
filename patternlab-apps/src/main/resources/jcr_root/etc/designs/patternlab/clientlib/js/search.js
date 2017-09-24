@@ -46,7 +46,9 @@ var PatternSearch = {
 
   openSearch: function() {
     PatternSearch.active = true;
-    $('#sg-tools-toggle').click();
+    if (!$('.sg-acc-panel').hasClass('active')) {
+        $('#sg-tools-toggle').click();
+    }
     $("#sg-find").addClass('show-overflow');
     $('#sg-find .typeahead').val("");
     $('#sg-find #typeahead')[0].focus();
