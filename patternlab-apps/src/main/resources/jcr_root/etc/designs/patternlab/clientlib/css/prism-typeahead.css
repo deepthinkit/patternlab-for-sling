@@ -1,4 +1,4 @@
-/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+json */
+/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+json&plugins=normalize-whitespace */
 /**
  * prism.js default theme for JavaScript, CSS and HTML
  * Based on dabblet (http://dabblet.com)
@@ -12,7 +12,7 @@ pre[class*="language-"] {
 	text-shadow: 0 1px white;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	text-align: left;
-	white-space: pre-line;
+	white-space: pre;
 	word-spacing: normal;
 	word-break: normal;
 	word-wrap: normal;

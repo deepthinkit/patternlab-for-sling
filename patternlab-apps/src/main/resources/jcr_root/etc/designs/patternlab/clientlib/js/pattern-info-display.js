@@ -33,21 +33,33 @@ var PatternInfoDisplayViewer = {
             $(panels[j]).find('code.language-' + language)[0].innerHTML = Prism.highlight($.trim(code).replace(/^\s*[\r\n]/gm,''), Prism.languages[language]);
          }
          else {
-            var link = panels[j].getAttribute('data-link');
-            if (link != null && link.length > 0) {
-                $.ajax({
-                   url:link,
-                   type:'GET',
-                   panel: panels[j],
-                   language: language,
-                   success: function(code){
-                       var bodyCode = code.substring(code.indexOf('<body>') + 6, code.indexOf('</body>')),
-                           trimmedCode = $.trim(bodyCode).replace('<template>','').replace(/^\s*[\r\n]/gm,'');
-                       $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight(trimmedCode, Prism.languages[language]);
-                   }
-                });
+            var link = panels[j].getAttribute('data-link'),
+                trials = 0;
 
+            function updateMarkup(url, language, panel) {
+                if (link != null && link.length > 0) {
+                    $.ajax({
+                       url:link,
+                       type:'GET',
+                       panel: panel,
+                       language: language,
+                       success: function(code){
+                           var bodyCode = code.substring(code.indexOf('<body>') + 6, code.indexOf('</body>')),
+                               trimmedCode = $.trim(bodyCode).replace('<template>','').replace(/^\s*[\r\n]/gm,'');
+                           $(this.panel).find('code.language-' + language)[0].innerHTML = Prism.highlight(trimmedCode, Prism.languages[language]);
+                       },
+                       error: function() {
+                           if (trials < 5) {
+                               trials++;
+                               window.setTimeout(function() {updateMarkup(url, language, panel);}, 200);
+                           }
+                       }
+                    });
+
+                }
             }
+            updateMarkup(link, language, panels[j]);
+
          }
       }
 
