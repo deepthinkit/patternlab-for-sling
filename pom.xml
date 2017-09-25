@@ -28,9 +28,10 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/deepthinkit/patternlab-for-sling.git</connection>
-        <developerConnection>scm:git:ssh://github.com:deepthinkit/patternlab-for-sling.git</developerConnection>
-        <url>http://github.com/deepthinkit/patternlab-for-sling/tree/master</url>
+        <connection>scm:git:https://github.com/deepthinkit/patternlab-for-sling.git</connection>
+        <developerConnection>scm:git:git@github.com:deepthinkit/patternlab-for-sling.git</developerConnection>
+        <url>https://github.com/deepthinkit/patternlab-for-sling</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
@@ -49,6 +50,32 @@
         <module>patternlab-apps</module>
         <module>patternlab-core</module>
     </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <goals>install</goals>
+                    <localCheckout>true</localCheckout>
+                    <pushChanges>false</pushChanges>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-invoker</artifactId>
+                        <version>2.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>Sling9</id>
@@ -63,6 +90,35 @@
                 <sightly.version>1.0.32</sightly.version>
                 <sling.models>1.1.0</sling.models>
             </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
