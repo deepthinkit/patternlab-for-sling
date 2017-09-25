@@ -17,13 +17,12 @@
   specific language governing permissions and limitations
   under the License.
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.deepthinkit.patternlab.sling</groupId>
         <artifactId>patternlab-sling-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>patternlab-sling-apps</artifactId>
@@ -43,7 +42,7 @@
                 <configuration>
                     <instructions>
                         <!-- Stop bnd complaining about unused Private-Package instructions -->
-                        <Private-Package></Private-Package>
+                        <Private-Package />
                         <Sling-Nodetypes>SLING-INF/nodetypes/nodetypes.cnd</Sling-Nodetypes>
                         <Sling-Initial-Content>
                             jcr_root/apps/patternlab;overwrite:=true;uninstall:=true;path:=/apps/patternlab,
