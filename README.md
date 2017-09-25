@@ -117,7 +117,7 @@ This is the client side functionality coming from original Pattern Lab, allowing
 * _RANDOM_ - adapts Patterns viewport to any random width
 * _DISCO_ - presents Patterns continuously and randomly in different view ports
 
-### Pattern Responsive design validation
+### Pattern documentation
 
 Document your patterns using Markdown format by creating files matching names of your pattern and optionally template, for example:
 
